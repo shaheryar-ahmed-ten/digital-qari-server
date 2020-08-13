@@ -31,6 +31,16 @@ let qari_schema = new mongoose.Schema({
     timestamps: true
 });
 
+function find_handler(next) {
+    this.populate('institute');
+    next();
+}
+
+qari_schema.pre('find', find_handler);
+qari_schema.pre('findOne', find_handler);
+qari_schema.pre('findById', find_handler);
+
+
 let Qari = mongoose.model(MODEL.QARI, qari_schema, COLLECTION.QARIS);
 
 module.exports = { Qari };
