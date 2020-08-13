@@ -11,7 +11,9 @@ module.exports.ERRORS = {
     TOKEN_EXPIRED: "Token expired",
     EMAIL_REQUIRED: "Email is required",
     PASSWORD_REQUIRED: "Password is required",
-    ROLE_REQUIRED: "Role is required"
+    ROLE_REQUIRED: "Role is required",
+    NAME_REQUIRED: "Name is required",
+    ADDRESS_REQUIRED: "Address is required"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;
@@ -19,11 +21,13 @@ module.exports.BCRYPT_SALT_WORK_FACTOR = 10;
 module.exports.MODEL = {
     USER: "user",
     ADMIN: "admin",
+    INSTITUTE: "institute"
 };
 
 module.exports.COLLECTION = {
     USERS: "users",
-    ADMINS: "admins"
+    ADMINS: "admins",
+    INSTITUTES: "institutes"
 };
 
 module.exports.REGEX = {
@@ -31,13 +35,14 @@ module.exports.REGEX = {
 };
 
 module.exports.USER_ROLES = {
-    ADMIN: "admin"
+    ADMIN: "admin",
+    INSTITUTE: "institute"
 }
 
 module.exports.EMAIL = {
     CHANGE_PASSWORD_EMAIL: (token) => {
         return {
-            subject: "server-backend-boilerplate - Change Password",
+            subject: "Digital Qari - Change Password",
             html: require("./email_templates/change_password.email").default(token)
         }
     }
