@@ -1,11 +1,9 @@
-const { User, Admin, Restaurant, Rider } = require("../../models");
+const { User, Admin } = require("../../models");
 
 const { TE } = require("../../utils/helpers");
 const { ERRORS, USER_ROLES } = require("../../utils/constants");
 
 const AdminService = require("./admin.service");
-const RestaurantService = require("./restaurant.service");
-const RiderService = require("./rider.service");
 
 class UserService {
     async find_by_email(email) {

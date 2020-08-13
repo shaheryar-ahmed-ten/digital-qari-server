@@ -48,7 +48,7 @@ module.exports.create_token = auth => {
             role: auth.role,
             role_id: auth.role_id
         },
-        'pickngowalaproject'
+        'digitalqariwalaproject'
     );
 };
 
@@ -63,7 +63,7 @@ module.exports.send_token = (req, res) => {
 };
 
 module.exports.authenticate = express_jwt({
-    secret: 'pickngowalaproject',
+    secret: 'digitalqariwalaproject',
     requestProperty: 'auth',
     getToken: function (req) {
         if (req.headers['x-auth-token']) {
