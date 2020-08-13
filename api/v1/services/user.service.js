@@ -112,12 +112,12 @@ class UserService {
         }
     }
 
-    async lock(user_id) {
+    async deactivate(user_id) {
         try {
             let user = await User.updateOne({
                 _id: user_id
             }, {
-                locked: true
+                active: false
             });
             return true;
         } catch(err) {
@@ -125,12 +125,12 @@ class UserService {
         }
     }
 
-    async unlock(user_id) {
+    async activate(user_id) {
         try {
             let user = await User.updateOne({
                 _id: user_id
             }, {
-                locked: false
+                active: true
             });
             return true;
         } catch(err) {

@@ -20,9 +20,9 @@ let user_schema = new mongoose.Schema({
         required: [true, ERRORS.ROLE_REQUIRED],
         enum: [...Object.values(USER_ROLES)]
     },
-    locked: {
+    active: {
         type: Boolean,
-        default: false
+        default: true
     },
     token: {
         type: String,

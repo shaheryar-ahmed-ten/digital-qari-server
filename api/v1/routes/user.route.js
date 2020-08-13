@@ -110,13 +110,13 @@ router.post('/:user_id/change_password', authenticate, async (req, res) => {
   }
 });
 
-router.post('/:user_id/lock', authenticate, async (req, res) => {
+router.post('/:user_id/deactivate', authenticate, async (req, res) => {
   try {
     if(req.auth.role != USER_ROLES.ADMIN) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
     else {
-      let user_locked_successfully = await UserService.lock(req.params.user_id);
+      let user_deactivated_successfully = await UserService.deactivate(req.params.user_id);
       ReS(res, {
-        user_locked_successfully
+        user_deactivated_successfully
       });
     }
   } catch(err) {
@@ -124,13 +124,13 @@ router.post('/:user_id/lock', authenticate, async (req, res) => {
   }
 });
 
-router.post('/:user_id/unlock', authenticate, async (req, res) => {
+router.post('/:user_id/activate', authenticate, async (req, res) => {
   try {
     if(req.auth.role != USER_ROLES.ADMIN) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
     else {
-      let user_unlocked_successfully = await UserService.unlock(req.params.user_id);
+      let user_activated_successfully = await UserService.activate(req.params.user_id);
       ReS(res, {
-        user_unlocked_successfully
+        user_activated_successfully
       });
     }
   } catch(err) {

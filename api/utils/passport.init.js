@@ -17,7 +17,7 @@ const user_local_strategy = new LocalStrategy({
                 let is_match = user.compare_password(password);
                 if(!is_match) return done(null, false, {error: ERRORS.INVALID_CREDENTIALS});
                 else {
-                    if(user.locked) return done(null, false, {error: ERRORS.ACCOUNT_IS_LOCKED});
+                    if(!user.active) return done(null, false, {error: ERRORS.ACCOUNT_IS_INACTIVE});
                     user.role_id = await UserService.get_role_id(user._id, user.role);
                     return done(null, user);
                 }
