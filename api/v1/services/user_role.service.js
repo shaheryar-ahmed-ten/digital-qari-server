@@ -23,12 +23,12 @@ class UserRoleService {
         }
     }
 
-    async get_all(limit = 10, page = 1) {
+    async get_all(filters = {}, limit = 10, page = 1) {
         try {
             if (!limit) limit = 10;
             if (!page) page = 1;
-            let documents = await this.Model.find().skip((page - 1) * limit).limit(limit).select('-password').populate('user');
-            let total_count = await this.Model.countDocuments();
+            let documents = await this.Model.find(filters).skip((page - 1) * limit).limit(limit).select('-password').populate('user');
+            let total_count = await this.Model.countDocuments(filters);
             return {documents, total_count};
         } catch (err) {
             TE(err);
