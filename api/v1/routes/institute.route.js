@@ -12,7 +12,7 @@ router.get('/', authenticate, async (req, res) => {
     else {
       let limit = ~~req.query.limit;
       let page = ~~req.query.page;
-      let {institutes, total_count} = await InstituteService.get_all(limit, page);
+      let {documents: institutes, total_count} = await InstituteService.get_all(limit, page);
   
       ReS(res, {
         institutes,

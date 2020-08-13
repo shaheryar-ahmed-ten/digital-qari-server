@@ -8,6 +8,7 @@ const logger = require('morgan');
 const user_router = require("./routes/user.route");
 const admin_router = require("./routes/admin.route");
 const institute_router = require("./routes/institute.route");
+const qari_router = require("./routes/qari.route");
 
 const {ReE} = require("../utils/helpers");
 
@@ -34,6 +35,7 @@ require('../utils/passport.init');
 app.use('/users', user_router);
 app.use('/admins', admin_router);
 app.use('/institutes', institute_router);
+app.use('/qaris', qari_router);
 
 app.use(function(err, req, res, next) {
   if(err.name === 'UnauthorizedError') {

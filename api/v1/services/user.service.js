@@ -1,10 +1,11 @@
-const { User, Admin, Institute } = require("../../models");
+const { User, Admin, Institute, Qari } = require("../../models");
 
 const { TE } = require("../../utils/helpers");
 const { ERRORS, USER_ROLES } = require("../../utils/constants");
 
 const AdminService = require("./admin.service");
 const InstituteService = require("./institute.service");
+const QariService = require("./qari.service");
 
 class UserService {
     async find_by_email(email) {
@@ -35,6 +36,9 @@ class UserService {
                 case USER_ROLES.INSTITUTE:
                     user_with_role = new Institute(user_obj);
                     break;
+                case USER_ROLES.QARI:
+                    user_with_role = new Qari(user_obj);
+                    break;
             }
             
             if(user_obj["email"]) user_obj["email"] = user_obj["email"].toLowerCase();
@@ -57,6 +61,8 @@ class UserService {
                     return (await AdminService.find_by_user_id(user_id))._id;
                 case USER_ROLES.INSTITUTE:
                     return (await InstituteService.find_by_user_id(user_id))._id;
+                case USER_ROLES.QARI:
+                    return (await QariService.find_by_user_id(user_id))._id;
             }
         } catch(err) {
             TE(err);
