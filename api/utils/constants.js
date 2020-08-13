@@ -15,7 +15,8 @@ module.exports.ERRORS = {
     NAME_REQUIRED: "Name is required",
     ADDRESS_REQUIRED: "Address is required",
     PHONE_NUMBER_REQUIRED: "Phone number is required",
-    PROFILE_PICTURE_REQUIRED: "Profile picture is required"
+    PROFILE_PICTURE_REQUIRED: "Profile picture is required",
+    INSTITUTE_REQUIRED: "Institute is required"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;

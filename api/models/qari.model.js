@@ -6,6 +6,11 @@ let qari_schema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: MODEL.USER
     },
+    institute: {
+        type: mongoose.Types.ObjectId,
+        ref: MODEL.INSTITUTE,
+        required: [true, ERRORS.INSTITUTE_REQUIRED]
+    },
     name: {
         type: String,
         required: [true, ERRORS.NAME_REQUIRED]

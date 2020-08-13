@@ -3,12 +3,13 @@ var router = express.Router();
 
 const passport = require("passport");
 
-const {ReS, ReE, generate_token, send_token, authenticate} = require("../../utils/helpers");
+const {ReS, ReE, generate_token, send_token, authenticate, convert_to_object_id} = require("../../utils/helpers");
 const {ERRORS, USER_ROLES, EMAIL} = require("../../utils/constants");
 
 const { transport_mail } = require("../../utils/nodemailer.transporter");
 
 const UserService = require("../services/user.service");
+const QariService = require("../services/qari.service");
 
 router.get('/', authenticate, async (req, res) => {
   try {
@@ -112,13 +113,21 @@ router.post('/:user_id/change_password', authenticate, async (req, res) => {
 
 router.post('/:user_id/deactivate', authenticate, async (req, res) => {
   try {
-    if(req.auth.role != USER_ROLES.ADMIN) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
-    else {
-      let user_deactivated_successfully = await UserService.deactivate(req.params.user_id);
-      ReS(res, {
-        user_deactivated_successfully
-      });
+    if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE) {
+      ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
     }
+
+    if(req.auth.role == USER_ROLES.INSTITUTE) {
+      let qari = await QariService.find_by_user_id(req.params.user_id);
+      if(!qari || qari.institute != req.auth.role_id) {
+        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      }
+    }
+
+    let user_deactivated_successfully = await UserService.deactivate(req.params.user_id);
+    ReS(res, {
+      user_deactivated_successfully
+    });
   } catch(err) {
     TE(err);
   }
@@ -126,13 +135,21 @@ router.post('/:user_id/deactivate', authenticate, async (req, res) => {
 
 router.post('/:user_id/activate', authenticate, async (req, res) => {
   try {
-    if(req.auth.role != USER_ROLES.ADMIN) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
-    else {
-      let user_activated_successfully = await UserService.activate(req.params.user_id);
-      ReS(res, {
-        user_activated_successfully
-      });
+    if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE) {
+      ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
     }
+
+    if(req.auth.role == USER_ROLES.INSTITUTE) {
+      let qari = await QariService.find_by_user_id(req.params.user_id);
+      if(!qari || qari.institute != req.auth.role_id) {
+        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      }
+    }
+
+    let user_activated_successfully = await UserService.activate(req.params.user_id);
+    ReS(res, {
+      user_activated_successfully
+    });
   } catch(err) {
     TE(err);
   }
