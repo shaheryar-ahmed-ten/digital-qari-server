@@ -9,15 +9,15 @@ let user_schema = new mongoose.Schema({
             validator: (v) => REGEX.EMAIL.test(v),
             message: props => `${ERRORS.INVALID_EMAIL}: ${props.value}`
         },
-        required: true
+        required: [true, ERRORS.EMAIL_REQUIRED]
     },
     password: {
         type: String,
-        required: true
+        required: [true, ERRORS.PASSWORD_REQUIRED]
     },
     role: {
         type: String,
-        required: true,
+        required: [true, ERRORS.ROLE_REQUIRED],
         enum: [...Object.values(USER_ROLES)]
     },
     locked: {

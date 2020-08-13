@@ -4,12 +4,14 @@ module.exports.ERRORS = {
     INVALID_EMAIL: "Invalid email",
     INVALID_PASSWORD: "Invalid password",
     INVALID_CREDENTIALS: "Invalid credentials",
-    INCOMPLETE_FIELDS: "Please fill all required fields",
     USER_NOT_FOUND: "User not found",
     UNAUTHORIZED_USER: "User unauthorized",
     PASSWORDS_DONT_MATCH: "Passwords do not match",
     ACCOUNT_IS_LOCKED: "Account is locked",
     TOKEN_EXPIRED: "Token expired",
+    EMAIL_REQUIRED: "Email is required",
+    PASSWORD_REQUIRED: "Password is required",
+    ROLE_REQUIRED: "Role is required"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;

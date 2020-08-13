@@ -35,7 +35,7 @@ class UserService {
             
             if(user_obj["email"]) user_obj["email"] = user_obj["email"].toLowerCase();
             let user = new User(user_obj);
-            await user_with_role.validate();
+            if(user_obj.role) await user_with_role.validate();
             await user.save();
             user_with_role.user = user._id;
             await user_with_role.save();
