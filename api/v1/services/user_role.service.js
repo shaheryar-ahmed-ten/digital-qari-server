@@ -2,7 +2,7 @@ const { TE } = require("../../utils/helpers");
 
 class UserRoleService {
     constructor(model) {
-      this.Model = model;
+        this.Model = model;
     }
 
     async find_by_user_id(user_id) {
@@ -27,22 +27,22 @@ class UserRoleService {
         try {
             if (!limit) limit = 10;
             if (!page) page = 1;
-            let documents = await this.Model.find(filters).skip((page - 1) * limit).limit(limit).select('-password').populate('user');
+            let documents = await this.Model.find(filters).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).populate('user', "-password");
             let total_count = await this.Model.countDocuments(filters);
-            return {documents, total_count};
+            return { documents, total_count };
         } catch (err) {
             TE(err);
         }
     }
 
     async update(id, fields) {
-      try {
-        let document = await this.Model.findById(id);
-        Object.assign(document, fields);
-        await document.save();
-      } catch (err) {
-        TE(err);
-      }
+        try {
+            let document = await this.Model.findById(id);
+            Object.assign(document, fields);
+            await document.save();
+        } catch (err) {
+            TE(err);
+        }
     }
 }
 
