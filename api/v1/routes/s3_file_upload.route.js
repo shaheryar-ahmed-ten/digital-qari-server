@@ -13,7 +13,7 @@ router.post('/', authenticate, async(req, res) => {
 
     ReS(res, {location});
   } catch(err) {
-    ReE(res, err);
+    ReE(res, err, 422);
   }
 });
 

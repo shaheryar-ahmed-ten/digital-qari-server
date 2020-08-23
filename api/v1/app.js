@@ -39,7 +39,7 @@ app.use('/qaris', qari_router);
 
 app.use(function(err, req, res, next) {
   if(err.name === 'UnauthorizedError') {
-    ReE(res, err);
+    ReE(res, err, 422);
     logger.error(err);
     return;
   }
