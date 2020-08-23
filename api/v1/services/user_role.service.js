@@ -16,7 +16,7 @@ class UserRoleService {
 
     async find_by_id(id) {
         try {
-            let model = await this.Model.findById(id);
+            let model = await this.Model.findById(id).populate('user', "-password");
             return model;
         } catch (err) {
             TE(err);
