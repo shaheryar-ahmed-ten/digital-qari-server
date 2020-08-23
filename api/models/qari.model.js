@@ -26,6 +26,10 @@ let qari_schema = new mongoose.Schema({
     phone_number: {
         type: String,
         required: [true, ERRORS.PHONE_NUMBER_REQUIRED]
+    },
+    calendar: {
+        type: Map,
+        default: {}
     }
 }, {
     timestamps: true

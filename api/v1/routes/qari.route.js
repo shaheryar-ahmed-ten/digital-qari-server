@@ -25,8 +25,8 @@ router.get('/', async (req, res) => {
       qaris,
       total_count
     });
-  } catch (err) {
-    ReE(res, err);
+  } catch(err) {
+    ReE(res, err, 422);
   }
 });
 
@@ -37,7 +37,7 @@ router.get('/:qari_id', async (req, res) => {
       qari
     });
   } catch (err) {
-    ReE(res, err);
+    ReE(res, err, 422);
   }
 });
 
@@ -51,9 +51,34 @@ router.put('/:qari_id', authenticate, async (req, res) => {
       });
     }
   } catch (err) {
-    ReE(res, err);
+    ReE(res, err, 422);
   }
 });
 
+router.post('/:qari_id/assign_slot', authenticate, async (req, res) => {
+  try {
+    if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) {
+      ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    }
+
+    if(req.auth.role == USER_ROLES.INSTITUTE) {
+      let qari = await QariService.find_by_id(req.params.qari_id);
+      if(!qari || qari.institute._id != req.auth.role_id) {
+        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      }
+    }
+
+    let slot_day = req.body.slot_day;
+    let slot_num = req.body.slot_num;
+    let status = req.body.status;
+
+    let qari = await QariService.assign_slot(req.params.qari_id, slot_day, slot_num, status);
+    ReS(res, {
+      qari
+    });
+  } catch (err) {
+    ReE(res, err, 422);
+  }
+});
 
 module.exports = router;
