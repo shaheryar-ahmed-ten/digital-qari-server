@@ -40,7 +40,7 @@ router.put('/:institute_id', authenticate, async (req, res) => {
   try {
     if(req.auth.role != USER_ROLES.ADMIN && req.auth.role_id != req.params.institute_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
     else {
-      let institute = await InstituteService.update(req.auth.role_id, req.body);
+      let institute = await InstituteService.update(req.params.institute_id, req.body);
       ReS(res, {
         institute
       });
