@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
       qaris,
       total_count
     });
-  } catch(err) {
+  } catch (err) {
     ReE(res, err, 422);
   }
 });
@@ -43,13 +43,19 @@ router.get('/:qari_id', async (req, res) => {
 
 router.put('/:qari_id', authenticate, async (req, res) => {
   try {
-    if (req.auth.role != USER_ROLES.ADMIN && req.auth.role_id != req.params.qari_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
-    else {
-      let qari = await QariService.update(req.auth.role_id, req.body);
-      ReS(res, {
-        qari
-      });
+    if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    if (req.auth.role == USER_ROLES.INSTITUTE) {
+      let qari = await QariService.find_by_id(req.params.qari_id);
+      if (!qari || qari.institute._id != req.auth.role_id) {
+        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      }
     }
+
+    let qari = await QariService.update(req.params.qari_id, req.body);
+    ReS(res, {
+      qari
+    });
+
   } catch (err) {
     ReE(res, err, 422);
   }
@@ -57,13 +63,13 @@ router.put('/:qari_id', authenticate, async (req, res) => {
 
 router.post('/:qari_id/assign_slot', authenticate, async (req, res) => {
   try {
-    if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) {
+    if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) {
       ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
     }
 
-    if(req.auth.role == USER_ROLES.INSTITUTE) {
+    if (req.auth.role == USER_ROLES.INSTITUTE) {
       let qari = await QariService.find_by_id(req.params.qari_id);
-      if(!qari || qari.institute._id != req.auth.role_id) {
+      if (!qari || qari.institute._id != req.auth.role_id) {
         ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
       }
     }
