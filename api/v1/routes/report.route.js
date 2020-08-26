@@ -1,0 +1,52 @@
+var express = require('express');
+var router = express.Router();
+
+const {ReS, ReE, authenticate} = require("../../utils/helpers");
+const {ERRORS, USER_ROLES} = require("../../utils/constants");
+
+const ReportService = require("../services/report.service");
+const QariService = require("../services/qari.service");
+
+router.get('/calendar', authenticate, async (req, res) => {
+  try {
+    let institute_id = req.query.institute;
+    let qari_id = req.query.qari;
+
+    let report;
+    
+    if(qari_id) {
+      if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != qari_id) {
+        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      }
+  
+      if(req.auth.role == USER_ROLES.INSTITUTE) {
+        let qari = await QariService.find_by_id(qari_id);
+        if(!qari || qari.institute._id != req.auth.role_id) {
+          ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+        }
+      }
+      
+      report = await ReportService.get_qari_report(qari_id);
+    } else if(institute_id) {
+      if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != institute_id) {
+        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      }
+
+      report = await ReportService.get_institute_report(institute_id);
+    } else {
+      if(req.auth.role != USER_ROLES.ADMIN) {
+        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      }
+
+      report = await ReportService.get_full_report();
+    }
+
+    ReS(res, {
+      report
+    });
+  } catch (err) {
+    ReE(res, err, 422);
+  }
+});
+
+module.exports = router;

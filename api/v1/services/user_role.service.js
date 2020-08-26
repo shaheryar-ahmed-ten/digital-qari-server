@@ -35,6 +35,16 @@ class UserRoleService {
         }
     }
 
+    async get_all_ids(filters = {}) {
+        try {
+            let documents = await this.Model.find(filters).lean().select('_id');
+            let total_count = await this.Model.countDocuments(filters);
+            return { documents, total_count };
+        } catch (err) {
+            TE(err);
+        }
+    }
+
     async update(id, fields) {
         try {
             let document = await this.Model.findById(id);

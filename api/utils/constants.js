@@ -45,6 +45,12 @@ module.exports.USER_ROLES = {
     QARI: "qari"
 }
 
+module.exports.SLOT_STATUS = {
+    UNAVAILABLE: 0,
+    AVAILABLE: 1,
+    ASSIGNED: 2
+}
+
 module.exports.EMAIL = {
     CHANGE_PASSWORD_EMAIL: (token) => {
         return {
