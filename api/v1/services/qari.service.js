@@ -36,8 +36,7 @@ class QariService extends UserRoleService {
             slot_inserted_obj[slot_num] = status;
 
             qari["calendar"].set(slot_day, slot_inserted_obj);
-            
-
+            qari.markModified('calendar');
             await qari.save();
             return qari;
         } catch (err) {
