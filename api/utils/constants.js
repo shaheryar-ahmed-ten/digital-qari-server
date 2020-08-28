@@ -48,7 +48,7 @@ module.exports.USER_ROLES = {
 module.exports.SLOT_STATUS = {
     UNAVAILABLE: 0,
     AVAILABLE: 1,
-    ASSIGNED: 2
+    UNASSIGNED: 2
 }
 
 module.exports.EMAIL = {
