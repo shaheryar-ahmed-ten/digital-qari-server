@@ -45,7 +45,7 @@ class QariService extends UserRoleService {
             if (!calendar[slot_day]) calendar[slot_day] = {};
 
             let slot_inserted_obj = calendar[slot_day];
-            if (slot_inserted_obj[slot_num] && status === SLOT_STATUS.UNASSIGNED) {
+            if (slot_inserted_obj[slot_num] !== undefined && status === SLOT_STATUS.UNASSIGNED) {
                 delete slot_inserted_obj[slot_num];
             } else {
                 slot_inserted_obj[slot_num] = status;
