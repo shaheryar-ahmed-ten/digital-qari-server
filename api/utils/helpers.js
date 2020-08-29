@@ -3,7 +3,7 @@ const express_jwt = require('express-jwt');
 
 const mongoose = require("mongoose");
 
-module.exports.convert_to_object_id = function(id) {
+module.exports.convert_to_object_id = function (id) {
     return mongoose.Types.ObjectId(id);
 }
 
@@ -11,30 +11,30 @@ module.exports.get_file_buffer = (b64_string) => {
     return new Buffer(b64_string.replace(/^data:(.*,)?/, ""), 'base64');
 }
 
-module.exports.ReE = function(res, err, code=422){ // Error Web Response
-    if(typeof err == 'object' && typeof err.message != 'undefined'){
+module.exports.ReE = function (res, err, code = 422) { // Error Web Response
+    if (typeof err == 'object' && typeof err.message != 'undefined') {
         err = err.message;
     }
 
-    if(typeof code !== 'undefined') res.statusCode = code;
+    if (typeof code !== 'undefined') res.statusCode = code;
 
-    return res.json({success:false, error: err});
+    return res.json({ success: false, error: err });
 };
 
-module.exports.ReS = function(res, data, code){ // Success Web Response
-    let send_data = {success:true};
+module.exports.ReS = function (res, data, code) { // Success Web Response
+    let send_data = { success: true };
 
-    if(typeof data == 'object'){
+    if (typeof data == 'object') {
         send_data = Object.assign(data, send_data);//merge the objects
     }
 
-    if(typeof code !== 'undefined') res.statusCode = code;
+    if (typeof code !== 'undefined') res.statusCode = code;
 
     return res.json(send_data)
 };
 
-module.exports.TE = TE = function(err_message, log = true){ // TE stands for Throw Error
-    if(log === true){
+module.exports.TE = TE = function (err_message, log = true) { // TE stands for Throw Error
+    if (log === true) {
         console.error(err_message);
     }
 
@@ -71,5 +71,18 @@ module.exports.authenticate = express_jwt({
         }
         return null;
     },
-    
+
 });
+
+module.exports.map_to_object = (map) => {
+    const out = Object.create(null)
+    map.forEach((value, key) => {
+        if (value instanceof Map) {
+            out[key] = map_to_object(value)
+        }
+        else {
+            out[key] = value
+        }
+    })
+    return out
+};
