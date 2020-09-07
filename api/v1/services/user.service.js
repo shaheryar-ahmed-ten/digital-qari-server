@@ -6,6 +6,7 @@ const { ERRORS, USER_ROLES } = require("../../utils/constants");
 const AdminService = require("./admin.service");
 const InstituteService = require("./institute.service");
 const QariService = require("./qari.service");
+const S3FileUploadService = require("./s3_file_upload.service");
 
 class UserService {
     async find_by_email(email) {
@@ -28,27 +29,38 @@ class UserService {
 
     async create(user_obj, is_first_signup=false) {
         try {
-            let user_with_role;
+            let user_with_role, role_service;
             switch(user_obj.role) {
                 case USER_ROLES.ADMIN:
                     user_with_role = new Admin(user_obj);
+                    role_service = AdminService;
                     break;
                 case USER_ROLES.INSTITUTE:
                     user_with_role = new Institute(user_obj);
+                    role_service = InstituteService;
                     break;
                 case USER_ROLES.QARI:
                     user_with_role = new Qari(user_obj);
+                    role_service = QariService;
                     break;
             }
             
             if(user_obj["email"]) user_obj["email"] = user_obj["email"].toLowerCase();
-            let user = new User(user_obj);
-            if(user_obj.role) await user_with_role.validate();
-            await user.save();
-            user_with_role.user = user._id;
-            await user_with_role.save();
             
-            return user_with_role;
+            let user = new User(user_obj);
+            
+            if(user_obj.role) await user_with_role.validate();
+            
+            await user.save();
+            
+            user_with_role.user = user._id;
+            let picture = user_obj.picture;
+            // let role_string = "role_" + (user_obj.role ? user_obj.role : 'user');
+            if(picture) {
+                user_with_role.picture = await S3FileUploadService.upload_file(`abcd`, picture);
+            }
+            
+            return (await role_service.create(user_with_role));
         } catch(err) {
             TE(err);
         }

@@ -1,55 +1,17 @@
 const { TE } = require("../../utils/helpers");
 
-class UserRoleService {
+const CrudService = require("./crud.service");
+
+class UserRoleService extends CrudService {
     constructor(model) {
+        super(model);
         this.Model = model;
     }
 
     async find_by_user_id(user_id) {
         try {
-            let model = await this.Model.findOne({ user: user_id });
-            return model;
-        } catch (err) {
-            TE(err);
-        }
-    }
-
-    async find_by_id(id) {
-        try {
-            let model = await this.Model.findById(id).populate('user', "-password");
-            return model;
-        } catch (err) {
-            TE(err);
-        }
-    }
-
-    async get_all(filters = {}, limit = 10, page = 1) {
-        try {
-            if (!limit) limit = 10;
-            if (!page) page = 1;
-            let documents = await this.Model.find(filters).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).populate('user', "-password");
-            let total_count = await this.Model.countDocuments(filters);
-            return { documents, total_count };
-        } catch (err) {
-            TE(err);
-        }
-    }
-
-    async get_all_ids(filters = {}) {
-        try {
-            let documents = await this.Model.find(filters).lean().select('_id');
-            let total_count = await this.Model.countDocuments(filters);
-            return { documents, total_count };
-        } catch (err) {
-            TE(err);
-        }
-    }
-
-    async update(id, fields) {
-        try {
-            let document = await this.Model.findById(id);
-            Object.assign(document, fields);
-            await document.save();
+            let document = await this.Model.findOne({ user: user_id });
+            return document;
         } catch (err) {
             TE(err);
         }

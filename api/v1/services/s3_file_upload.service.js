@@ -1,10 +1,11 @@
-const { TE, get_file_buffer } = require("../utils/helpers");
-const { S3Object, upload_to_s3 } = require("../utils/s3.init");
+const { TE, get_file_buffer } = require("../../utils/helpers");
+const { S3Object, upload_to_s3 } = require("../../utils/s3.init");
 
 class S3FileUploadService {
   async upload_file(key, file) {
     try {
-      const buff = await get_file_buffer(file["value"]);
+      console.log("asd");
+      const buff = get_file_buffer(file["value"]);
       const data = await upload_to_s3(new S3Object(key, buff, file["type"]));
       
       return data["Location"];

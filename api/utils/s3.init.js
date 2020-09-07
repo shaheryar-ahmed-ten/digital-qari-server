@@ -2,7 +2,7 @@ const {TE} = require("./helpers");
 const process = require("process");
 const AWS = require('aws-sdk');
 
-AWS.config.loadFromPath(process.cwd()+'/api/v1/utils/aws_config.json');
+AWS.config.loadFromPath(process.cwd()+'/api/utils/aws_config.json');
 
 const s3 = new AWS.S3({
     apiVersion: '2006-03-01'
@@ -17,7 +17,7 @@ class S3Object {
 
     get upload_params() {
         return {
-            Bucket: "datadarbar",
+            Bucket: "digital-qari",
             Key: this.key,
             Body: this.body,
             ContentEncoding: 'base64',

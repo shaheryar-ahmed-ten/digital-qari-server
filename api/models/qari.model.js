@@ -15,9 +15,9 @@ let qari_schema = new mongoose.Schema({
         type: String,
         required: [true, ERRORS.NAME_REQUIRED]
     },
-    profile_picture: {
-        type: String,
-        required: [true, ERRORS.PROFILE_PICTURE_REQUIRED]
+    picture: {
+        type: mongoose.Schema.Types.Mixed,
+        required: [true, ERRORS.PICTURE_REQUIRED]
     },
     address: {
         type: String,
@@ -25,6 +25,7 @@ let qari_schema = new mongoose.Schema({
     },
     phone_number: {
         type: String,
+        unique: true,
         required: [true, ERRORS.PHONE_NUMBER_REQUIRED]
     },
     calendar: {
