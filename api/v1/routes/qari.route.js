@@ -51,7 +51,10 @@ router.put('/:qari_id', authenticate, async (req, res) => {
       }
     }
 
-    let qari = await QariService.update(req.params.qari_id, req.body);
+    let qari = req.body;
+    if(qari.fee) qari.fee_touched = true;
+
+    qari = await QariService.update(req.params.qari_id, qari);
     ReS(res, {
       qari
     });

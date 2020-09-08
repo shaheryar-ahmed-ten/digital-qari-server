@@ -26,6 +26,18 @@ class CrudService {
         }
     }
 
+    async update_all(filters, fields) {
+        try {
+            await this.Model.updateMany(filters, {
+                $set: fields
+            });
+
+            return true;
+          } catch (err) {
+            TE(err);
+          }
+    }
+
     async get_all(filters = {}, limit = 10, page = 1) {
         try {
             if (!limit) limit = 10;
@@ -42,6 +54,15 @@ class CrudService {
         try {
             let document = await this.Model.findById(id);
             return document;
+        } catch (err) {
+            TE(err);
+        }
+    }
+
+    async find(filters) {
+        try {
+            let documents = await this.Model.find(filters);
+            return {documents};
         } catch (err) {
             TE(err);
         }

@@ -31,6 +31,14 @@ let qari_schema = new mongoose.Schema({
     calendar: {
         type: Map,
         default: {}
+    },
+    fee: {
+        type: Number,
+        required: true,
+    },
+    fee_touched: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
