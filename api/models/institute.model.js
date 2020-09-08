@@ -13,6 +13,9 @@ let institute_schema = new mongoose.Schema({
     address: {
         type: String,
         required: [true, ERRORS.ADDRESS_REQUIRED]
+    },
+    base_fee: {
+        type: Number
     }
 }, {
     timestamps: true
