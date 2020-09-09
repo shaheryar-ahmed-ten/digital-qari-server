@@ -26,24 +26,41 @@ router.get('/calendar', authenticate, async (req, res) => {
         }
       }
       
-      report = await ReportService.get_qari_report(qari_id);
+      report = await ReportService.get_qari_calendar_report(qari_id);
     } else if(institute_id) {
       if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != institute_id) {
         ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
       }
 
-      report = await ReportService.get_institute_report(institute_id);
+      report = await ReportService.get_institute_calendar_report(institute_id);
     } else {
       if(req.auth.role != USER_ROLES.ADMIN) {
         ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
       }
 
-      report = await ReportService.get_full_report();
+      report = await ReportService.get_full_calendar_report();
     }
 
     ReS(res, {
       report
     });
+  } catch (err) {
+    ReE(res, err, 422);
+  }
+});
+
+router.get('/institute/:institute_id', authenticate, async (req, res) => {
+  try {
+    let institute_id = req.params.institute_id;
+
+    if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != institute_id) {
+      ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    } else {
+      let report = await ReportService.get_institute_report(institute_id);
+      ReS(res, {
+        report
+      });
+    }
   } catch (err) {
     ReE(res, err, 422);
   }

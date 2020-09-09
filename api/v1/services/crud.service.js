@@ -67,6 +67,15 @@ class CrudService {
             TE(err);
         }
     }
+
+    async count(filters) {
+        try {
+            let count = await this.Model.countDocuments(filters);
+            return count;
+        } catch (err) {
+            TE(err);
+        }
+    }
 }
 
 module.exports = CrudService;

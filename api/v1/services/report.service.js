@@ -4,7 +4,7 @@ const { SLOT_STATUS } = require("../../utils/constants");
 const QariService = require("../services/qari.service");
 
 class ReportService {
-  async get_qari_report(qari_id) {
+  async get_qari_calendar_report(qari_id) {
     try {
       let qari = await QariService.find_by_id(qari_id);
       if (!qari) return {};
@@ -15,7 +15,7 @@ class ReportService {
     }
   }
 
-  async get_institute_report(institute_id) {
+  async get_institute_calendar_report(institute_id) {
     try {
       let { documents: qaris } = await QariService.find_by_institute_id(institute_id);
 
@@ -28,7 +28,7 @@ class ReportService {
     }
   }
 
-  async get_full_report() {
+  async get_full_calendar_report() {
     try {
       let { documents: qaris } = await QariService.get_all_calendars();
       let report = {};
@@ -64,6 +64,22 @@ class ReportService {
       })
     })
     return report;
+  }
+
+  async get_institute_report(institute_id) {
+    try {
+      let report = {};
+      report.total_qaris = await QariService.count({
+        institute: institute_id
+      });
+      report.total_students = 0;
+      report.students_per_qari = [];
+      report.revenue_per_qari = [];
+      report.total_revenue = 0;
+      return report;
+    } catch (err) {
+      TE(err);
+    }
   }
 }
 
