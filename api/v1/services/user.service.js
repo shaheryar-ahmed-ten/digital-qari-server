@@ -55,9 +55,9 @@ class UserService {
             
             user_with_role.user = user._id;
             let picture = user_obj.picture;
-            // let role_string = "role_" + (user_obj.role ? user_obj.role : 'user');
+            let role_string = "role_" + (user_obj.role ? user_obj.role : 'user');
             if(picture) {
-                user_with_role.picture = await S3FileUploadService.upload_file(`abcd`, picture);
+                user_with_role.picture = await S3FileUploadService.upload_file(`${role_string}-${user._id}-profile_picture`, picture);
             }
             
             return (await role_service.create(user_with_role));
