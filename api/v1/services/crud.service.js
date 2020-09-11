@@ -1,5 +1,7 @@
 const { TE } = require("../../utils/helpers");
 
+const S3FileUploadService = require("./s3_file_upload.service");
+
 class CrudService {
     constructor(model) {
         this.Model = model;
@@ -18,6 +20,10 @@ class CrudService {
     async update(id, fields) {
         try {
           let document = await this.Model.findById(id);
+          let picture = fields.picture;
+          if(picture) {
+              fields.picture = await S3FileUploadService.upload_file(`${document.user._id}-profile_picture`, picture);
+          }
           Object.assign(document, fields);
           await document.save();
           return document;
