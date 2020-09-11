@@ -26,9 +26,9 @@ function find_handler(next) {
     next();
 }
 
-qari_schema.pre('find', find_handler);
-qari_schema.pre('findOne', find_handler);
-qari_schema.pre('findById', find_handler);
+institute_schema.pre('find', find_handler);
+institute_schema.pre('findOne', find_handler);
+institute_schema.pre('findById', find_handler);
 
 let Institute = mongoose.model(MODEL.INSTITUTE, institute_schema, COLLECTION.INSTITUTES);
 
