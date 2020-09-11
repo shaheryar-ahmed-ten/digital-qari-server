@@ -46,6 +46,7 @@ let qari_schema = new mongoose.Schema({
 
 function find_handler(next) {
     this.populate('institute');
+    this.populate('user');
     next();
 }
 
