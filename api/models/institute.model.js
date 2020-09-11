@@ -21,6 +21,15 @@ let institute_schema = new mongoose.Schema({
     timestamps: true
 });
 
+function find_handler(next) {
+    this.populate('user');
+    next();
+}
+
+qari_schema.pre('find', find_handler);
+qari_schema.pre('findOne', find_handler);
+qari_schema.pre('findById', find_handler);
+
 let Institute = mongoose.model(MODEL.INSTITUTE, institute_schema, COLLECTION.INSTITUTES);
 
 module.exports = { Institute };
