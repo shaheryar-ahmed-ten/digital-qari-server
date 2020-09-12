@@ -10,18 +10,19 @@ class InstituteService extends UserRoleService {
     }
 
     async update(id, fields) {
+        console.log(fields);
         try {
-            if(fields.base_fee) {
+            if (fields.base_fee) {
                 await QariService.update_all({
                     institute: id,
-                    fee_touched: false
+                    fee_touched: { $ne: true }
                 }, {
                     fee: fields.base_fee
                 });
             }
 
             return super.update(id, fields);
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }

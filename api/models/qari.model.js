@@ -17,7 +17,6 @@ let qari_schema = new mongoose.Schema({
     },
     picture: {
         type: mongoose.Schema.Types.Mixed,
-        required: [true, ERRORS.PICTURE_REQUIRED]
     },
     address: {
         type: String,
