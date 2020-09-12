@@ -49,6 +49,21 @@ router.get('/calendar', authenticate, async (req, res) => {
   }
 });
 
+router.get('/institute', authenticate, async (req, res) => {
+  try {
+    if(req.auth.role != USER_ROLES.ADMIN) {
+      ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    } else {
+      let report = await ReportService.get_institutes_reports();
+      ReS(res, {
+        report
+      });
+    }
+  } catch (err) {
+    ReE(res, err, 422);
+  }
+});
+
 router.get('/institute/:institute_id', authenticate, async (req, res) => {
   try {
     let institute_id = req.params.institute_id;

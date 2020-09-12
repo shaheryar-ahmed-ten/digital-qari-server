@@ -2,6 +2,7 @@ const { TE, map_to_object } = require("../../utils/helpers");
 const { SLOT_STATUS } = require("../../utils/constants");
 
 const QariService = require("../services/qari.service");
+const InstituteService = require("../services/institute.service");
 
 class ReportService {
   async get_qari_calendar_report(qari_id) {
@@ -76,6 +77,30 @@ class ReportService {
       report.students_per_qari = [];
       report.revenue_per_qari = [];
       report.total_revenue = 0;
+
+      return report;
+    } catch (err) {
+      TE(err);
+    }
+  }
+
+  async get_institutes_reports() {
+    try {
+      let report = {};
+      let {documents: institutes} = await InstituteService.find();
+      for await (let institute of institutes) {
+        let sub_report = {};
+        sub_report.total_qaris = await QariService.count({
+          institute: institute["_id"]
+        });
+        sub_report.total_students = 0;
+        sub_report.students_per_qari = [];
+        sub_report.revenue_per_qari = [];
+        sub_report.total_revenue = 0;
+
+        report[institute["_id"]] = sub_report;
+      }
+      
       return report;
     } catch (err) {
       TE(err);
