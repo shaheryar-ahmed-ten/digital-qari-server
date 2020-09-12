@@ -65,9 +65,23 @@ class CrudService {
         }
     }
 
-    async find(filters) {
+    async find(filters = {}) {
         try {
             let documents = await this.Model.find(filters);
+            return {documents};
+        } catch (err) {
+            TE(err);
+        }
+    }
+
+    async condensed_find(filters = {}) {
+        try {
+            let documents = await this.Model.find(filters).lean().select('_id name');
+            documents = documents.map(doc => {
+                delete doc["institute"];
+                delete doc["user"];
+                return doc;
+            })
             return {documents};
         } catch (err) {
             TE(err);

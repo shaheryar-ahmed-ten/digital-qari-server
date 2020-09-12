@@ -6,6 +6,17 @@ const {ERRORS, USER_ROLES} = require("../../utils/constants");
 
 const InstituteService = require("../services/institute.service");
 
+router.get('/all', async (req, res) => {
+  try {
+    let { documents: institutes } = await InstituteService.condensed_find();
+    ReS(res, {
+      institutes
+    });
+  } catch(err) {
+    ReE(res, err, 422);
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     let limit = ~~req.query.limit;
