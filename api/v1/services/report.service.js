@@ -86,7 +86,7 @@ class ReportService {
 
   async get_institutes_reports() {
     try {
-      let report = {};
+      let reports = {};
       let {documents: institutes} = await InstituteService.find();
       for await (let institute of institutes) {
         let sub_report = {};
@@ -98,8 +98,25 @@ class ReportService {
         sub_report.revenue_per_qari = [];
         sub_report.total_revenue = 0;
 
-        report[institute["_id"]] = sub_report;
+        reports[institute["_id"]] = sub_report;
       }
+
+      let report = {
+        total_qaris: 0,
+        total_students: 0,
+        total_revenue: 0,
+        students_per_qari: 0,
+        revenue_per_qari: 0
+      };
+
+      Object.keys(reports).forEach(institute => {
+        let sub_report = reports[institute];
+        report.total_qaris += sub_report.total_qaris;
+        report.total_students += sub_report.total_students;
+        report.total_revenue += sub_report.total_revenue;
+        report.students_per_qari += sub_report.students_per_qari;
+        report.revenue_per_qari += sub_report.revenue_per_qari;
+      });
       
       return report;
     } catch (err) {
