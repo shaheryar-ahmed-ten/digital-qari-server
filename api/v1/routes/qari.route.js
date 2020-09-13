@@ -8,11 +8,16 @@ const QariService = require("../services/qari.service");
 
 router.get('/all', async (req, res) => {
   try {
-    let { documents: qaris } = await QariService.condensed_find();
+    let institute = req.query.institute;
+    const filters = {};
+    if (institute) {
+      filters['institute'] = convert_to_object_id(institute);
+    }
+    let { documents: qaris } = await QariService.condensed_find({ ...filters });
     ReS(res, {
       qaris
     });
-  } catch(err) {
+  } catch (err) {
     ReE(res, err, 422);
   }
 });
@@ -55,15 +60,15 @@ router.get('/:qari_id', async (req, res) => {
 router.put('/:qari_id', authenticate, async (req, res) => {
   try {
     if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    let oldQari = await QariService.find_by_id(req.params.qari_id);
     if (req.auth.role == USER_ROLES.INSTITUTE) {
-      let qari = await QariService.find_by_id(req.params.qari_id);
-      if (!qari || qari.institute._id != req.auth.role_id) {
+      if (!oldQari || oldQari.institute._id != req.auth.role_id) {
         ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
       }
     }
 
     let qari = req.body;
-    if(qari.fee) qari.fee_touched = true;
+    if (qari.fee !== oldQari.fee) qari.fee_touched = true;
 
     qari = await QariService.update(req.params.qari_id, qari);
     ReS(res, {

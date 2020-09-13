@@ -34,6 +34,7 @@ let qari_schema = new mongoose.Schema({
     fee: {
         type: Number,
         required: true,
+        default: 0,
     },
     fee_touched: {
         type: Boolean,

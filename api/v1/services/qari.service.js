@@ -59,6 +59,20 @@ class QariService extends UserRoleService {
             TE(err);
         }
     }
+
+    async condensed_find(filters = {}) {
+        try {
+            let documents = await this.Model.find(filters).select('_id name calendar').lean();
+            documents = documents.map(doc => {
+                doc["institute"] = doc["institute"]["_id"];
+                delete doc["user"];
+                return doc;
+            })
+            return { documents };
+        } catch (err) {
+            TE(err);
+        }
+    }
 }
 
 module.exports = new QariService();
