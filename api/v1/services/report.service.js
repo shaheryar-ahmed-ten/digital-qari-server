@@ -90,23 +90,32 @@ class ReportService {
       let {documents: institutes} = await InstituteService.find();
       for await (let institute of institutes) {
         let sub_report = {};
-        sub_report.total_qaris = await QariService.count({
+        let {documents: qaris} = await QariService.find({
           institute: institute["_id"]
         });
+        sub_report.total_qaris = qaris.length;
         sub_report.total_students = 0;
-        sub_report.students_per_qari = [];
-        sub_report.revenue_per_qari = [];
+        sub_report.students_per_qari = {};
+        sub_report.revenue_per_qari = {};
+        for(let qari in qaris) {
+          sub_report.students_per_qari[qari._id] = {
+            students: 0
+          };
+          sub_report.revenue_per_qari[qari._id] = {
+            students: 0
+          };
+        }
         sub_report.total_revenue = 0;
 
         reports[institute["_id"]] = sub_report;
       }
-
+      
       let report = {
         total_qaris: 0,
         total_students: 0,
         total_revenue: 0,
-        students_per_qari: 0,
-        revenue_per_qari: 0
+        students_per_qari: [],
+        revenue_per_qari: []
       };
 
       Object.keys(reports).forEach(institute => {
@@ -114,8 +123,8 @@ class ReportService {
         report.total_qaris += sub_report.total_qaris;
         report.total_students += sub_report.total_students;
         report.total_revenue += sub_report.total_revenue;
-        report.students_per_qari += sub_report.students_per_qari;
-        report.revenue_per_qari += sub_report.revenue_per_qari;
+        report.students_per_qari.concat(sub_report.students_per_qari);
+        report.revenue_per_qari.concat(sub_report.revenue_per_qari);
       });
       
       return report;
