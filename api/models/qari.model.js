@@ -24,7 +24,7 @@ let qari_schema = new mongoose.Schema({
     },
     phone_number: {
         type: String,
-        unique: true,
+        unique: [true, ERRORS.PHONE_NUMBER_NOT_UNIQUE],
         required: [true, ERRORS.PHONE_NUMBER_REQUIRED]
     },
     calendar: {
@@ -54,6 +54,13 @@ qari_schema.pre('find', find_handler);
 qari_schema.pre('findOne', find_handler);
 qari_schema.pre('findById', find_handler);
 
+qari_schema.post('save', function(error, doc, next) {
+    if (error.name === 'MongoError' && error.code === 11000) {
+        next(new Error('Phone number already used'));
+    } else {
+        next(error);
+    }
+});
 
 let Qari = mongoose.model(MODEL.QARI, qari_schema, COLLECTION.QARIS);
 

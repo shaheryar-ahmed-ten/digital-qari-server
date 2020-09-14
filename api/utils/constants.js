@@ -14,6 +14,7 @@ module.exports.ERRORS = {
     ROLE_REQUIRED: "Role is required",
     NAME_REQUIRED: "Name is required",
     ADDRESS_REQUIRED: "Address is required",
+    PHONE_NUMBER_NOT_UNIQUE: "Phone number is not unique",
     PHONE_NUMBER_REQUIRED: "Phone number is required",
     PICTURE_REQUIRED: "Picture is required",
     INSTITUTE_REQUIRED: "Institute is required"
