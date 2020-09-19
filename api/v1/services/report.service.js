@@ -69,64 +69,19 @@ class ReportService {
 
   async get_institute_report(institute_id) {
     try {
+      const filters = {};
+      if (institute_id) {
+        filters['institute'] = institute_id;
+      }
       let report = {};
-      report.total_qaris = await QariService.count({
-        institute: institute_id
-      });
+      report.total_qaris = await QariService.count(filters);
       report.total_students = 0;
-      report.students_per_qari = [];
-      report.revenue_per_qari = [];
       report.total_revenue = 0;
 
-      return report;
-    } catch (err) {
-      TE(err);
-    }
-  }
+      const allQaris = (await QariService.condensed_find(filters, "_id name")).documents;
+      report.students_per_qari = allQaris.map(q => ({ ...q, students: 0 }));
+      report.revenue_per_qari = allQaris.map(q => ({ ...q, revenue: 0 }));;
 
-  async get_institutes_reports() {
-    try {
-      let reports = {};
-      let {documents: institutes} = await InstituteService.find();
-      for await (let institute of institutes) {
-        let sub_report = {};
-        let {documents: qaris} = await QariService.find({
-          institute: institute["_id"]
-        });
-        sub_report.total_qaris = qaris.length;
-        sub_report.total_students = 0;
-        sub_report.students_per_qari = {};
-        sub_report.revenue_per_qari = {};
-        for(let qari in qaris) {
-          sub_report.students_per_qari[qari._id] = {
-            students: 0
-          };
-          sub_report.revenue_per_qari[qari._id] = {
-            students: 0
-          };
-        }
-        sub_report.total_revenue = 0;
-
-        reports[institute["_id"]] = sub_report;
-      }
-      
-      let report = {
-        total_qaris: 0,
-        total_students: 0,
-        total_revenue: 0,
-        students_per_qari: [],
-        revenue_per_qari: []
-      };
-
-      Object.keys(reports).forEach(institute => {
-        let sub_report = reports[institute];
-        report.total_qaris += sub_report.total_qaris;
-        report.total_students += sub_report.total_students;
-        report.total_revenue += sub_report.total_revenue;
-        report.students_per_qari.concat(sub_report.students_per_qari);
-        report.revenue_per_qari.concat(sub_report.revenue_per_qari);
-      });
-      
       return report;
     } catch (err) {
       TE(err);

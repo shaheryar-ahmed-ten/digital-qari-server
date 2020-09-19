@@ -54,7 +54,7 @@ router.get('/institute', authenticate, async (req, res) => {
     if(req.auth.role != USER_ROLES.ADMIN) {
       ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
     } else {
-      let report = await ReportService.get_institutes_reports();
+      let report = await ReportService.get_institute_report();
       ReS(res, {
         report
       });
