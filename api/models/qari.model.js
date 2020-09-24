@@ -56,7 +56,7 @@ qari_schema.pre('findById', find_handler);
 
 qari_schema.post('save', function(error, doc, next) {
     if (error.name === 'MongoError' && error.code === 11000) {
-        next(new Error('Phone number already used'));
+        next('Phone number already used');
     } else {
         next(error);
     }
