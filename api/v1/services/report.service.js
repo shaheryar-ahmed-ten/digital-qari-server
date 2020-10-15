@@ -2,7 +2,6 @@ const { TE, map_to_object } = require("../../utils/helpers");
 const { SLOT_STATUS } = require("../../utils/constants");
 
 const QariService = require("../services/qari.service");
-const InstituteService = require("../services/institute.service");
 
 class ReportService {
   async get_qari_calendar_report(qari_id) {

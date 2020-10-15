@@ -26,14 +26,16 @@ module.exports.MODEL = {
     USER: "user",
     ADMIN: "admin",
     INSTITUTE: "institute",
-    QARI: "qari"
+    QARI: "qari",
+    CLASSROOM: "classroom"
 };
 
 module.exports.COLLECTION = {
     USERS: "users",
     ADMINS: "admins",
     INSTITUTES: "institutes",
-    QARIS: "qaris"
+    QARIS: "qaris",
+    CLASSROOMS: "classrooms"
 };
 
 module.exports.REGEX = {

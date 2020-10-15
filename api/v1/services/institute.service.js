@@ -10,7 +10,6 @@ class InstituteService extends UserRoleService {
     }
 
     async update(id, fields) {
-        console.log(fields);
         try {
             if (fields.base_fee) {
                 await QariService.update_all({
