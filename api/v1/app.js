@@ -9,6 +9,7 @@ const user_router = require("./routes/user.route");
 const admin_router = require("./routes/admin.route");
 const institute_router = require("./routes/institute.route");
 const qari_router = require("./routes/qari.route");
+const student_router = require("./routes/student.route");
 const report_router = require("./routes/report.route");
 const classroom_router = require("./routes/classroom.route");
 
@@ -34,12 +35,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 require('../utils/passport.init');
 
-const {v4: uuidV4} = require('uuid');
-
 app.use('/users', user_router);
 app.use('/admins', admin_router);
 app.use('/institutes', institute_router);
 app.use('/qaris', qari_router);
+app.use('/students', student_router);
 app.use('/reports', report_router);
 app.use('/classrooms', classroom_router);
 

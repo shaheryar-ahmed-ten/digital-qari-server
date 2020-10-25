@@ -17,7 +17,8 @@ module.exports.ERRORS = {
     PHONE_NUMBER_NOT_UNIQUE: "Phone number is not unique",
     PHONE_NUMBER_REQUIRED: "Phone number is required",
     PICTURE_REQUIRED: "Picture is required",
-    INSTITUTE_REQUIRED: "Institute is required"
+    INSTITUTE_REQUIRED: "Institute is required",
+    DATE_OF_BIRTH_REQUIRED: "Date of birth is required"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;
@@ -27,7 +28,8 @@ module.exports.MODEL = {
     ADMIN: "admin",
     INSTITUTE: "institute",
     QARI: "qari",
-    CLASSROOM: "classroom"
+    CLASSROOM: "classroom",
+    STUDENT: "student"
 };
 
 module.exports.COLLECTION = {
@@ -35,7 +37,8 @@ module.exports.COLLECTION = {
     ADMINS: "admins",
     INSTITUTES: "institutes",
     QARIS: "qaris",
-    CLASSROOMS: "classrooms"
+    CLASSROOMS: "classrooms",
+    STUDENTS: "students"
 };
 
 module.exports.REGEX = {
@@ -45,7 +48,8 @@ module.exports.REGEX = {
 module.exports.USER_ROLES = {
     ADMIN: "admin",
     INSTITUTE: "institute",
-    QARI: "qari"
+    QARI: "qari",
+    STUDENT: "student"
 }
 
 module.exports.SLOT_STATUS = {

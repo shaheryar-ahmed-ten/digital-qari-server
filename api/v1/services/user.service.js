@@ -1,4 +1,4 @@
-const { User, Admin, Institute, Qari } = require("../../models");
+const { User, Admin, Institute, Qari, Student } = require("../../models");
 
 const { TE } = require("../../utils/helpers");
 const { ERRORS, USER_ROLES } = require("../../utils/constants");
@@ -6,6 +6,7 @@ const { ERRORS, USER_ROLES } = require("../../utils/constants");
 const AdminService = require("./admin.service");
 const InstituteService = require("./institute.service");
 const QariService = require("./qari.service");
+const StudentService = require("./student.service");
 const S3FileUploadService = require("./s3_file_upload.service");
 
 class UserService {
@@ -42,6 +43,10 @@ class UserService {
                 case USER_ROLES.QARI:
                     user_with_role = new Qari(user_obj);
                     role_service = QariService;
+                    break;
+                case USER_ROLES.STUDENT:
+                    user_with_role = new Student(user_obj);
+                    role_service = StudentService;
                     break;
             }
             
