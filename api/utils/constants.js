@@ -10,15 +10,17 @@ module.exports.ERRORS = {
     ACCOUNT_IS_INACTIVE: "Account is inactive",
     TOKEN_EXPIRED: "Token expired",
     EMAIL_REQUIRED: "Email is required",
+    EMAIL_NOT_UNIQUE: "Email is already used",
     PASSWORD_REQUIRED: "Password is required",
     ROLE_REQUIRED: "Role is required",
     NAME_REQUIRED: "Name is required",
     ADDRESS_REQUIRED: "Address is required",
-    PHONE_NUMBER_NOT_UNIQUE: "Phone number is not unique",
+    PHONE_NUMBER_NOT_UNIQUE: "Phone number is already used",
     PHONE_NUMBER_REQUIRED: "Phone number is required",
     PICTURE_REQUIRED: "Picture is required",
     INSTITUTE_REQUIRED: "Institute is required",
-    DATE_OF_BIRTH_REQUIRED: "Date of birth is required"
+    DATE_OF_BIRTH_REQUIRED: "Date of birth is required",
+    GENDER_REQUIRED: "Gender is required"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;

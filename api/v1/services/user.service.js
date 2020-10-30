@@ -14,7 +14,7 @@ class UserService {
         try {
             let user = await User.findOne({ email });
             return user;
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
@@ -23,56 +23,66 @@ class UserService {
         try {
             let user = await User.findById(id);
             return user;
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
 
-    async create(user_obj, is_first_signup=false) {
+    async create(user_obj, is_first_signup = false) {
+        let session;
         try {
             let user_with_role, role_service;
-            switch(user_obj.role) {
+            switch (user_obj.role) {
                 case USER_ROLES.ADMIN:
                     user_with_role = new Admin(user_obj);
                     role_service = AdminService;
+                    session = await Admin.startSession();
                     break;
                 case USER_ROLES.INSTITUTE:
                     user_with_role = new Institute(user_obj);
                     role_service = InstituteService;
+                    session = await Institute.startSession();
                     break;
                 case USER_ROLES.QARI:
                     user_with_role = new Qari(user_obj);
                     role_service = QariService;
+                    session = await Qari.startSession();
                     break;
                 case USER_ROLES.STUDENT:
                     user_with_role = new Student(user_obj);
                     role_service = StudentService;
+                    session = await Student.startSession();
                     break;
             }
-            
-            if(user_obj["email"]) user_obj["email"] = user_obj["email"].toLowerCase();
-            
+
+            if (user_obj["email"]) user_obj["email"] = user_obj["email"].toLowerCase();
+
             let user = new User(user_obj);
-            
-            if(user_obj.role) await user_with_role.validate();
-            
-            await user.save();
-            
+
+            if (user_obj.role) await user_with_role.validate();
+            session.startTransaction();
+            let userSaveResponse = await user.save({ session });
+
             user_with_role.user = user._id;
             let picture = user_obj.picture;
-            if(picture) {
+            if (picture) {
                 user_with_role.picture = await S3FileUploadService.upload_file(`${user._id}-profile_picture`, picture);
             }
-            
-            return (await role_service.create(user_with_role));
-        } catch(err) {
+
+            const created_user_with_role = await role_service.create(user_with_role, { session });
+            await session.commitTransaction();
+            return created_user_with_role;
+        } catch (err) {
+            await session.abortTransaction();
             TE(err);
+        } finally {
+            session.endSession()
         }
     }
 
     async get_role_id(user_id, role) {
         try {
-            switch(role) {
+            switch (role) {
                 case USER_ROLES.ADMIN:
                     return (await AdminService.find_by_user_id(user_id))._id;
                 case USER_ROLES.INSTITUTE:
@@ -80,53 +90,53 @@ class UserService {
                 case USER_ROLES.QARI:
                     return (await QariService.find_by_user_id(user_id))._id;
             }
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
 
-    async get_all(limit=10, page=1) {
+    async get_all(limit = 10, page = 1) {
         try {
-            if(!limit) limit = 10;
-            if(!page) page = 1;
-            let users = await User.find().skip((page-1)*limit).limit(limit).select('-password');
+            if (!limit) limit = 10;
+            if (!page) page = 1;
+            let users = await User.find().skip((page - 1) * limit).limit(limit).select('-password');
             return users;
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
 
     async update_user_token(email, token) {
         try {
-            let user = await User.findOne({email});
-            if(!user) TE(ERRORS.USER_NOT_FOUND);
+            let user = await User.findOne({ email });
+            if (!user) TE(ERRORS.USER_NOT_FOUND);
             else {
                 user.token = token;
                 await user.save();
                 return true;
             }
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
 
     async change_password(new_password, token, user_id, old_password) {
         try {
-            if(user_id) {
+            if (user_id) {
                 let user = await User.findById(user_id);
-                if(user && !user.compare_password(old_password)) TE(ERRORS.PASSWORDS_DONT_MATCH);
+                if (user && !user.compare_password(old_password)) TE(ERRORS.PASSWORDS_DONT_MATCH);
                 else {
                     user.password = new_password;
                     await user.save();
                     return true;
                 }
             } else {
-                let user = await User.findOne({token});
-                if(!user) TE(ERRORS.USER_NOT_FOUND);
+                let user = await User.findOne({ token });
+                if (!user) TE(ERRORS.USER_NOT_FOUND);
                 else {
                     const oneday = 60 * 60 * 24 * 1000;
-                    if((+new Date()) - (+user.updated_at) > oneday) TE(ERRORS.TOKEN_EXPIRED);
-                    else if(user.token != token) TE(ERRORS.UNAUTHORIZED_USER);
+                    if ((+new Date()) - (+user.updated_at) > oneday) TE(ERRORS.TOKEN_EXPIRED);
+                    else if (user.token != token) TE(ERRORS.UNAUTHORIZED_USER);
                     else {
                         user.password = new_password;
                         user.token = "";
@@ -135,7 +145,7 @@ class UserService {
                     }
                 }
             }
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
@@ -148,7 +158,7 @@ class UserService {
                 active: false
             });
             return true;
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
@@ -161,7 +171,7 @@ class UserService {
                 active: true
             });
             return true;
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
