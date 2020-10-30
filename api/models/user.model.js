@@ -5,11 +5,13 @@ const { MODEL, COLLECTION, ERRORS, REGEX, SALT_WORK_FACTOR, USER_ROLES } = requi
 let user_schema = new mongoose.Schema({
     email: {
         type: String,
+        lowercase:true,
         validate: {
             validator: (v) => REGEX.EMAIL.test(v),
             message: props => `${ERRORS.INVALID_EMAIL}: ${props.value}`
         },
-        required: [true, ERRORS.EMAIL_REQUIRED]
+        required: [true, ERRORS.EMAIL_REQUIRED],
+        unique: true,
     },
     password: {
         type: String,
@@ -32,18 +34,26 @@ let user_schema = new mongoose.Schema({
     timestamps: true
 });
 
-user_schema.pre('save', function(next) {
+user_schema.post('save', function(error, doc, next) {
+    if (error.name === 'MongoError' && error.code === 11000) {
+        next('Email already used');
+    } else {
+        next(error);
+    }
+});
+
+user_schema.pre('save', function (next) {
     var user = this;
 
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
 
     // generate a salt
-    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
         if (err) return next(err);
 
         // hash the password using our new salt
-        bcrypt.hash(user.password, salt, function(err, hash) {
+        bcrypt.hash(user.password, salt, function (err, hash) {
             if (err) return next(err);
 
             // override the cleartext password with the hashed one

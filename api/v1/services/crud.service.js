@@ -7,10 +7,10 @@ class CrudService {
         this.Model = model;
     }
 
-    async create(obj) {
+    async create(obj, options) {
         try {
           let document = new this.Model(obj);
-          await document.save();
+          await document.save(options);
           return document;
         } catch(err) {
           TE(err);

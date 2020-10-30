@@ -31,6 +31,15 @@ let qari_schema = new mongoose.Schema({
         type: Map,
         default: {}
     },
+    gender: {
+        type: String,
+    },
+    sect: {
+        type: String,
+    },
+    english_fluency: {
+        type: String,
+    },
     fee: {
         type: Number,
         required: true,
@@ -54,7 +63,7 @@ qari_schema.pre('find', find_handler);
 qari_schema.pre('findOne', find_handler);
 qari_schema.pre('findById', find_handler);
 
-qari_schema.post('save', function(error, doc, next) {
+qari_schema.post('save', function (error, doc, next) {
     if (error.name === 'MongoError' && error.code === 11000) {
         next('Phone number already used');
     } else {

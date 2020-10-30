@@ -12,19 +12,25 @@ let student_schema = new mongoose.Schema({
     },
     phone_number: {
         type: String,
-        unique: [true, ERRORS.PHONE_NUMBER_NOT_UNIQUE],
+        unique: true,
         required: [true, ERRORS.PHONE_NUMBER_REQUIRED]
     },
     date_of_birth: {
         type: Date,
         required: [true, ERRORS.DATE_OF_BIRTH_REQUIRED]
     },
-    parents: [{}],
+    gender: {
+        type: String,
+        required: [true, ERRORS.GENDER_REQUIRED]
+    },
+    parents_name: {
+        type: String,
+    },
 }, {
     timestamps: true
 });
 
-student_schema.post('save', function(error, doc, next) {
+student_schema.post('save', function (error, doc, next) {
     if (error.name === 'MongoError' && error.code === 11000) {
         next('Phone number already used');
     } else {
