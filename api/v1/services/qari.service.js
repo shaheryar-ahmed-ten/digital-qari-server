@@ -1,12 +1,35 @@
 const { Qari } = require("../../models");
 
 const UserRoleService = require("./user_role.service");
+const S3FileUploadService = require("./s3_file_upload.service");
 const { TE } = require("../../utils/helpers");
 const { SLOT_STATUS } = require("../../utils/constants");
 
 class QariService extends UserRoleService {
     constructor() {
         super(Qari);
+    }
+
+    async create(obj, options) {
+        try {
+            if(obj["recitation"]) obj.recitation = await S3FileUploadService.upload_file(`${obj.user}-recitation`, obj.recitation.file);
+            return super.create(obj, options);
+        } catch (err) {
+            TE(err);
+        }
+    }
+
+    async update(id, fields) {
+        try {
+          let qari = await Qari.findById(id);
+          let recitation = fields.recitation;
+          if(recitation) {
+              fields.recitation = await S3FileUploadService.upload_file(`${qari.user._id}-recitation`, recitation.file);
+          }
+          return super.update(id, fields);
+        } catch (err) {
+            TE(err);
+        }
     }
 
     async find_by_institute_id(institute_id) {
