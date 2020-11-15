@@ -20,7 +20,14 @@ module.exports.ERRORS = {
     PICTURE_REQUIRED: "Picture is required",
     INSTITUTE_REQUIRED: "Institute is required",
     DATE_OF_BIRTH_REQUIRED: "Date of birth is required",
-    GENDER_REQUIRED: "Gender is required"
+    GENDER_REQUIRED: "Gender is required",
+    PAYMENT_PLAN_REQUIRED: "Payment plan is required",
+    PAYMENT_DUE_DATE_REQUIRED: "Payment due date is required",
+    INVALID_PAYMENT_PLAN: "Invalid payment plan",
+    QARI_REQUIRED: "Qari is required",
+    STUDENT_REQUIRED: "Student is required",
+    SESSION_START_TIME_REQUIRED: "Session start time is required",
+    SESSION_END_TIME_REQUIRED: "Session end time is required"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;
@@ -31,7 +38,9 @@ module.exports.MODEL = {
     INSTITUTE: "institute",
     QARI: "qari",
     CLASSROOM: "classroom",
-    STUDENT: "student"
+    STUDENT: "student",
+    BOOKING: "booking",
+    SESSION: "session"
 };
 
 module.exports.COLLECTION = {
@@ -40,7 +49,9 @@ module.exports.COLLECTION = {
     INSTITUTES: "institutes",
     QARIS: "qaris",
     CLASSROOMS: "classrooms",
-    STUDENTS: "students"
+    STUDENTS: "students",
+    BOOKINGS: "bookings",
+    SESSIONS: "sessions"
 };
 
 module.exports.REGEX = {
@@ -59,6 +70,28 @@ module.exports.SLOT_STATUS = {
     AVAILABLE: 1,
     UNASSIGNED: 2
 }
+
+module.exports.DAYS_OF_WEEK = {
+    "Sunday": 0,
+    "Monday": 1,
+    "Tuesday": 2,
+    "Wednesday": 3,
+    "Thursday": 4,
+    "Friday": 5,
+    "Saturday": 6
+}
+
+module.exports.PAYMENT_PLANS = {
+    "Quarterly": {
+        payment_frequency: 3
+    },
+    "Bi-Annually": {
+        payment_frequency: 6
+    },
+    "Annually": {
+        payment_frequency: 12
+    }
+};
 
 module.exports.EMAIL = {
     CHANGE_PASSWORD_EMAIL: (token) => {

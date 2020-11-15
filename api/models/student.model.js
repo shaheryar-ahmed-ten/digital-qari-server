@@ -26,6 +26,12 @@ let student_schema = new mongoose.Schema({
     parents_name: {
         type: String,
     },
+    payment_plan: {
+        type: String
+    },
+    payment_due_date: {
+        type: Date
+    }
 }, {
     timestamps: true
 });

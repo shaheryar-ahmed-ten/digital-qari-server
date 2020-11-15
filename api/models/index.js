@@ -4,6 +4,8 @@ const { Institute } = require("./institute.model");
 const { Qari } = require("./qari.model");
 const { Classroom } = require("./classroom.model");
 const { Student } = require("./student.model");
+const { Booking } = require("./booking.model");
+const { Session } = require("./session.model");
 
 module.exports = {
     User,
@@ -11,5 +13,7 @@ module.exports = {
     Institute,
     Qari,
     Classroom,
-    Student
+    Student,
+    Booking,
+    Session
 };
