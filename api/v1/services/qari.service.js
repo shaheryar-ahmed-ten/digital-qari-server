@@ -59,7 +59,7 @@ class QariService extends UserRoleService {
         }
     }
 
-    async assign_slot(qari_id, slot_day, slot_num, status) {
+    async assign_slot(qari_id, slot_day, slot_num, status, options) {
         try {
             let qari = await this.find_by_id(qari_id);
 
@@ -76,7 +76,7 @@ class QariService extends UserRoleService {
 
             qari["calendar"].set(slot_day, slot_inserted_obj);
             qari.markModified('calendar');
-            await qari.save();
+            await qari.save(options);
             return qari;
         } catch (err) {
             TE(err);
