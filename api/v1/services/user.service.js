@@ -89,6 +89,8 @@ class UserService {
                     return (await InstituteService.find_by_user_id(user_id))._id;
                 case USER_ROLES.QARI:
                     return (await QariService.find_by_user_id(user_id))._id;
+                case USER_ROLES.STUDENT:
+                    return (await StudentService.find_by_user_id(user_id))._id;
             }
         } catch (err) {
             TE(err);
