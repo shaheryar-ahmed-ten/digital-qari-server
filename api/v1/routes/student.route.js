@@ -60,15 +60,6 @@ router.get('/:student_id', async (req, res) => {
 router.put('/:student_id', authenticate, async (req, res) => {
   try {
     if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.student_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
-    let oldstudent = await StudentService.find_by_id(req.params.student_id);
-    if (req.auth.role == USER_ROLES.INSTITUTE) {
-      if (!oldstudent || oldstudent.institute._id != req.auth.role_id) {
-        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
-      }
-    }
-
-    let student = req.body;
-    if (student.fee !== oldstudent.fee) student.fee_touched = true;
 
     student = await StudentService.update(req.params.student_id, student);
     ReS(res, {
