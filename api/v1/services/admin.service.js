@@ -3,7 +3,14 @@ const { Admin } = require("../../models");
 const { TE } = require("../../utils/helpers");
 const { ERRORS } = require("../../utils/constants");
 
-class AdminService {
+const UserRoleService = require("./user_role.service");
+
+class AdminService extends UserRoleService {
+
+    constructor() {
+        super(Admin);
+    }
+
     async find_by_user_id(user_id) {
         try {
             let admin = await Admin.findOne({ user: user_id });
