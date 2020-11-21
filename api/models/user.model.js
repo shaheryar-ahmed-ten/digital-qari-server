@@ -29,6 +29,13 @@ let user_schema = new mongoose.Schema({
     token: {
         type: String,
         default: ""
+    },
+    otp: {
+        type: String
+    },
+    verified: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

@@ -69,6 +69,34 @@ router.post('/login', async (req, res, next) => {
   })(req, res, next);
 }, generate_token, send_token);
 
+router.post('/:user_id/verify', authenticate, async (req, res) => {
+  try {
+    console.log(req.auth, req.params.user_id);
+    if(req.auth.id != req.params.user_id) TE(ERRORS.UNAUTHORIZED_USER);
+    let verified = await UserService.verify(req.params.user_id, req.body.otp);
+
+    ReS(res, {
+      verified
+    });
+  } catch(err) {
+    ReE(res, err, 422);
+  }
+});
+
+router.post('/:user_id/resend_otp', authenticate, async (req, res) => {
+  try {
+    if(req.auth.id != req.params.user_id) TE(ERRORS.UNAUTHORIZED_USER);
+
+    let resent_otp = await UserService.resend_otp(req.params.user_id, req.auth.role, req.auth.role_id);
+
+    ReS(res, {
+      resent_otp
+    });
+  } catch (err) {
+    ReE(res, err, 422);
+  }
+})
+
 router.post('/change_password_request', async(req, res) => {
   try {
     const token = new Buffer(`${+new Date()}`).toString("base64");

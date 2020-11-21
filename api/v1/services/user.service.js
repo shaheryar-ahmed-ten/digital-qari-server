@@ -1,13 +1,16 @@
 const { User, Admin, Institute, Qari, Student } = require("../../models");
 
 const { TE } = require("../../utils/helpers");
-const { ERRORS, USER_ROLES } = require("../../utils/constants");
+const { ERRORS, USER_ROLES, SMS } = require("../../utils/constants");
 
 const AdminService = require("./admin.service");
 const InstituteService = require("./institute.service");
 const QariService = require("./qari.service");
 const StudentService = require("./student.service");
 const S3FileUploadService = require("./s3_file_upload.service");
+const SNSSMSSendService = require("./sns_sms_send.service");
+
+const OTPGenerator = require('otp-generator')
 
 class UserService {
     async find_by_email(email) {
@@ -59,18 +62,32 @@ class UserService {
 
             let user = new User(user_obj);
 
+            if(user_obj.role == USER_ROLES.QARI || user_obj.role == USER_ROLES.STUDENT) {
+                user.otp = OTPGenerator.generate(6, { upperCase: true, specialChars: false });
+            } else {
+                user.verified = true;
+            }
+
             if (user_obj.role) await user_with_role.validate();
-            session.startTransaction();
-            let userSaveResponse = await user.save({ session });
+            
+            await session.startTransaction();
+            
+            await user.save({ session });
+            
+            const snsdata = await SNSSMSSendService.send_sms(user_with_role.phone_number, SMS.OTP_SMS(user.otp));
+            console.log("MSG", snsdata);
 
             user_with_role.user = user._id;
+            
             let picture = user_obj.picture;
             if (picture) {
                 user_with_role.picture = await S3FileUploadService.upload_file(`${user._id}-profile_picture`, picture);
             }
 
             const created_user_with_role = await role_service.create(user_with_role, { session });
+            
             await session.commitTransaction();
+            
             return created_user_with_role;
         } catch (err) {
             await session.abortTransaction();
@@ -172,6 +189,56 @@ class UserService {
             }, {
                 active: true
             });
+            return true;
+        } catch (err) {
+            TE(err);
+        }
+    }
+
+    async verify(user_id, otp) {
+        try {
+            let user = await User.findById(user_id);
+            if(user.otp == otp) {
+                user.verified = true;
+                await user.save();
+            } else {
+                TE(ERRORS.INVALID_OTP);
+            }
+
+            return true;
+        } catch (err) {
+            TE(err);
+        }
+    }
+
+    async resend_otp(user_id, role, role_id) {
+        try {
+            let user = await User.findById(user_id);
+
+            let role_service;
+
+            switch(role) {
+                case USER_ROLES.QARI:
+                    role_service = QariService;
+                    break;
+                case USER_ROLES.STUDENT:
+                    role_service = StudentService;
+                    break;
+                default:
+                    TE(ERRORS.UNAUTHORIZED_USER);
+                    break;
+            }
+            
+            if(user.verified) TE(ERRORS.USER_ALREADY_VERIFIED);
+
+            user.otp = OTPGenerator.generate(6, {upperCase: true, specialChars: false});
+
+            let phone_number = (await role_service.find_by_id(role_id)).phone_number;
+
+            await SNSSMSSendService.send_sms(phone_number, SMS.OTP_SMS(user.otp));
+
+            await user.save();
+
             return true;
         } catch (err) {
             TE(err);

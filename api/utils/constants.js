@@ -27,7 +27,9 @@ module.exports.ERRORS = {
     QARI_REQUIRED: "Qari is required",
     STUDENT_REQUIRED: "Student is required",
     SESSION_START_TIME_REQUIRED: "Session start time is required",
-    SESSION_END_TIME_REQUIRED: "Session end time is required"
+    SESSION_END_TIME_REQUIRED: "Session end time is required",
+    INVALID_OTP: "Invalid one-time passcode",
+    USER_ALREADY_VERIFIED: "User is already verified"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;
@@ -99,5 +101,11 @@ module.exports.EMAIL = {
             subject: "Digital Qari - Change Password",
             html: require("./email_templates/change_password.email").default(token)
         }
+    }
+}
+
+module.exports.SMS = {
+    OTP_SMS: (otp) => {
+        return `OTP: ${otp}. This is your one-time passcode for DigitalQari to verify your account.`;
     }
 }
