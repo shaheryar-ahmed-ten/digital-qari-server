@@ -15,7 +15,7 @@ class S3Object {
 
   get upload_params() {
       return {
-          Bucket: "digital-qari",
+          Bucket: "digital-qari-official",
           Key: this.key,
           Body: this.body,
           ContentEncoding: 'base64',

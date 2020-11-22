@@ -62,7 +62,9 @@ router.post('/login', async (req, res, next) => {
       req.auth = {
         id: user.id,
         role: user.role,
-        role_id: user.role_id
+        role_id: user.role_id,
+        email: user.email,
+        verified: user.verified
       }
       next();
     }
