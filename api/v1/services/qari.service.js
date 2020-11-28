@@ -83,6 +83,36 @@ class QariService extends UserRoleService {
         }
     }
 
+    async assign_bulk_slots(qari_id, slots, options) {
+        try {
+            let qari = await this.find_by_id(qari_id);
+
+            let calendar = qari["calendar"].toJSON();
+
+
+            for(let slot_day in slots){
+
+                if (!calendar[slot_day]) calendar[slot_day] = {};
+    
+                let slot_inserted_obj = calendar[slot_day];
+                for(let slot_num in slots[slot_day]){
+                    if (slots[slot_day][slot_num] === SLOT_STATUS.UNASSIGNED) {
+                        delete slot_inserted_obj[slot_num];
+                    } else {
+                        slot_inserted_obj[slot_num] = slots[slot_day][slot_num];
+                    }
+                }
+                qari["calendar"].set(slot_day, slot_inserted_obj);
+            }
+
+            qari.markModified('calendar');
+            await qari.save(options);
+            return qari;
+        } catch (err) {
+            TE(err);
+        }
+    }
+
     async condensed_find(filters = {}, fields = "_id name calendar") {
         try {
             let documents = await this.Model.find(filters).select(fields).lean();

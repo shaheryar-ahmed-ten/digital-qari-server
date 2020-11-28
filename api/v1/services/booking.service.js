@@ -37,7 +37,7 @@ class BookingService extends CrudService {
         student.payment_due_date = due_date;
         
         await student.save({session: transactionSession})
-        
+        const calendarToUpdate = {};
         for(let day in qari_slots) {
           for(let slot in qari_slots[day]) {
             let date = new Date();
@@ -61,10 +61,11 @@ class BookingService extends CrudService {
 
               await session.save({session: transactionSession});
             }
-            
-            await QariService.assign_slot(qari_id, day, slot, SLOT_STATUS.UNAVAILABLE, {session: transactionSession});
+            if(!calendarToUpdate[day])calendarToUpdate[day]={}
+            calendarToUpdate[day][slot] = SLOT_STATUS.UNAVAILABLE;
           }
         }
+        await QariService.assign_bulk_slots(qari_id, calendarToUpdate, {session: transactionSession});
 
         if(is_admin) booking.amount = amount;
         else {
