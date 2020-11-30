@@ -11,7 +11,6 @@ const institute_router = require("./routes/institute.route");
 const qari_router = require("./routes/qari.route");
 const student_router = require("./routes/student.route");
 const report_router = require("./routes/report.route");
-const classroom_router = require("./routes/classroom.route");
 const booking_router = require("./routes/booking.route");
 
 const {ReE} = require("../utils/helpers");
@@ -42,7 +41,6 @@ app.use('/institutes', institute_router);
 app.use('/qaris', qari_router);
 app.use('/students', student_router);
 app.use('/reports', report_router);
-app.use('/classrooms', classroom_router);
 app.use('/bookings', booking_router);
 
 app.use(function(err, req, res, next) {
