@@ -13,7 +13,7 @@ router.post('/', authenticate, async (req, res) => {
     if(req.auth.role == USER_ROLES.STUDENT && req.auth.role_id != req.body.student_id) TE(ERRORS.UNAUTHORIZED_USER);
     if(req.auth.role == USER_ROLES.ADMIN) obj.is_admin = true;
     
-    let {booking} = await BookingService.create(req.body);
+    let {booking} = await BookingService.create(obj);
 
     ReS(res, {
       booking
