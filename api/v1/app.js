@@ -12,6 +12,7 @@ const qari_router = require("./routes/qari.route");
 const student_router = require("./routes/student.route");
 const report_router = require("./routes/report.route");
 const booking_router = require("./routes/booking.route");
+const session_router = require("./routes/session.route");
 
 const {ReE} = require("../utils/helpers");
 
@@ -42,6 +43,7 @@ app.use('/qaris', qari_router);
 app.use('/students', student_router);
 app.use('/reports', report_router);
 app.use('/bookings', booking_router);
+app.use('/sessions', session_router);
 
 app.use(function(err, req, res, next) {
   if(err.name === 'UnauthorizedError') {
