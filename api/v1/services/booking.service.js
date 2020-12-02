@@ -1,5 +1,6 @@
 const { Booking, Session } = require("../../models");
 const { PAYMENT_PLANS, ERRORS, SLOT_STATUS, DAYS_OF_WEEK } = require("../../utils/constants");
+const { TE } = require("../../utils/helpers");
 
 const CrudService = require("./crud.service");
 const QariService = require("./qari.service");
