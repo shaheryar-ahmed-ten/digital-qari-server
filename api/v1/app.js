@@ -15,6 +15,7 @@ const booking_router = require("./routes/booking.route");
 const session_router = require("./routes/session.route");
 
 const {ReE} = require("../utils/helpers");
+const { HEADERS } = require('../utils/constants');
 
 require('../utils/db.js');
 
@@ -22,9 +23,9 @@ require('../utils/db.js');
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,x-auth-token');
+  res.setHeader('Access-Control-Allow-Headers', `X-Requested-With,content-type,${Object.values(HEADERS).join(",")}`);
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Expose-Headers', 'x-auth-token');
+  res.setHeader('Access-Control-Expose-Headers', Object.values(HEADERS).join(","));
   next();
 });
 

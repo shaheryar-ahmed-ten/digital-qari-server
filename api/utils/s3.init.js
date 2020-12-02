@@ -2,7 +2,7 @@ const {TE} = require("./helpers");
 
 const {AWS} = require("./aws.init");
 
-const s3 = new AWS.S3({
+const S3 = new AWS.S3({
   apiVersion: '2006-03-01'
 });
 
@@ -15,7 +15,7 @@ class S3Object {
 
   get upload_params() {
       return {
-          Bucket: "digital-qari-official",
+          Bucket: process.env.S3_BUCKET,
           Key: this.key,
           Body: this.body,
           ContentEncoding: 'base64',
@@ -26,7 +26,7 @@ class S3Object {
 
 async function upload_to_s3(s3_image) { // s3_image: S3Object
   try {
-      const data = await s3.upload({
+      const data = await S3.upload({
           ACL: 'public-read',
           ...s3_image.upload_params
       }).promise();

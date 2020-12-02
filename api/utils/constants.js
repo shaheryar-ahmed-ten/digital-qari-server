@@ -95,6 +95,10 @@ module.exports.PAYMENT_PLANS = {
     }
 };
 
+module.exports.HEADERS = {
+    X_AUTH_TOKEN: 'x-auth-token'
+}
+
 module.exports.EMAIL = {
     CHANGE_PASSWORD_EMAIL: (token) => {
         return {

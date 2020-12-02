@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const express_jwt = require('express-jwt');
 
 const mongoose = require("mongoose");
+const { HEADERS } = require('./constants');
 
 module.exports.convert_to_object_id = function (id) {
     return mongoose.Types.ObjectId(id);
@@ -48,7 +49,7 @@ module.exports.create_token = auth => {
             role: auth.role,
             role_id: auth.role_id
         },
-        'digitalqariwalaproject'
+        process.env.JWT_SECRET
     );
 };
 
@@ -58,16 +59,16 @@ module.exports.generate_token = (req, res, next) => {
 };
 
 module.exports.send_token = (req, res) => {
-    res.setHeader('x-auth-token', req.token);
+    res.setHeader(HEADERS.X_AUTH_TOKEN, req.token);
     this.ReS(res, req.auth);
 };
 
 module.exports.authenticate = express_jwt({
-    secret: 'digitalqariwalaproject',
+    secret: process.env.JWT_SECRET,
     requestProperty: 'auth',
     getToken: function (req) {
-        if (req.headers['x-auth-token']) {
-            return req.headers['x-auth-token'];
+        if (req.headers[HEADERS.X_AUTH_TOKEN]) {
+            return req.headers[HEADERS.X_AUTH_TOKEN];
         }
         return null;
     },
