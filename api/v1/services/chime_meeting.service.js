@@ -1,6 +1,5 @@
 const { Chime } = require("../../utils/chime.init");
 const { TE } = require("../../utils/helpers");
-const { transport_mail } = require("../../utils/nodemailer.transporter");
 
 class ChimeMeetingService {
   async create_meeting(session_id, host_id) {
