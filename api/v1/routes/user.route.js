@@ -6,10 +6,9 @@ const passport = require("passport");
 const {ReS, ReE, generate_token, send_token, authenticate, convert_to_object_id} = require("../../utils/helpers");
 const {ERRORS, USER_ROLES, EMAIL} = require("../../utils/constants");
 
-const { transport_mail } = require("../../utils/nodemailer.transporter");
-
 const UserService = require("../services/user.service");
 const QariService = require("../services/qari.service");
+const SESEmailSendService = require("../services/ses_email_send.service");
 
 router.get('/', authenticate, async (req, res) => {
   try {
@@ -46,6 +45,11 @@ router.get('/:user_id', authenticate, async (req, res) => {
 router.post('/', async (req, res, next) => {
   try {
     let user = await UserService.create(req.body, true);
+
+    let {subject, html} = EMAIL.WELCOME_EMAIL();
+
+    await SESEmailSendService.send_email(req.body.email, subject, html);
+
     ReS(res, {
       user
     });
@@ -106,11 +110,7 @@ router.post('/change_password_request', async(req, res) => {
     
     await UserService.update_user_token(req.body.email, token);
 
-    await transport_mail({
-        to: req.body.email,
-        subject,
-        html
-    });
+    await SESEmailSendService.send_email(req.body.email, subject, html);
 
     ReS(res);
   } catch(err) {

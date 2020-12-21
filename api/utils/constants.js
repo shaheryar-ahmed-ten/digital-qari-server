@@ -105,6 +105,12 @@ module.exports.EMAIL = {
             subject: "Digital Qari - Change Password",
             html: require("./email_templates/change_password.email").default(token)
         }
+    },
+    WELCOME_EMAIL: () => {
+        return {
+            subject: "Digital Qari - Welcome",
+            html: require("./email_templates/welcome.email").default()
+        }
     }
 }
 
