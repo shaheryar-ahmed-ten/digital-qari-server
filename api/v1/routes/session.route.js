@@ -10,9 +10,9 @@ router.post('/:session_id/join', authenticate, async (req, res) => {
     let obj = {};
 
     obj.session_id = req.params.session_id;
-    obj.user_id = req.auth.id;
+    obj.user_id = req.auth.role_id;
     
-    let session = await SessionService.create(obj);
+    let session = await SessionService.start(obj);
 
     ReS(res, {
       session
