@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { ReS, ReE, authenticate, convert_to_object_id } = require("../../utils/helpers");
+const { ReS, ReE, authenticate, convert_to_object_id, TE } = require("../../utils/helpers");
 const { ERRORS, USER_ROLES } = require("../../utils/constants");
 
 const QariService = require("../services/qari.service");
@@ -71,11 +71,11 @@ router.get('/:qari_id/students', authenticate, async (req, res) => {
 
 router.put('/:qari_id', authenticate, async (req, res) => {
   try {
-    if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) TE(ERRORS.UNAUTHORIZED_USER);
     let oldQari = await QariService.find_by_id(req.params.qari_id);
     if (req.auth.role == USER_ROLES.INSTITUTE) {
       if (!oldQari || oldQari.institute._id != req.auth.role_id) {
-        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+        TE(ERRORS.UNAUTHORIZED_USER);
       }
     }
 
@@ -95,13 +95,13 @@ router.put('/:qari_id', authenticate, async (req, res) => {
 router.post('/:qari_id/assign_slot', authenticate, async (req, res) => {
   try {
     if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) {
-      ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      TE(ERRORS.UNAUTHORIZED_USER);
     }
 
     if (req.auth.role == USER_ROLES.INSTITUTE) {
       let qari = await QariService.find_by_id(req.params.qari_id);
       if (!qari || qari.institute._id != req.auth.role_id) {
-        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+        TE(ERRORS.UNAUTHORIZED_USER);
       }
     }
 

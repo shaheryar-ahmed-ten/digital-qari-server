@@ -3,7 +3,7 @@ var router = express.Router();
 
 const passport = require("passport");
 
-const {ReS, ReE, generate_token, send_token, authenticate, convert_to_object_id} = require("../../utils/helpers");
+const {ReS, ReE, generate_token, send_token, authenticate, TE} = require("../../utils/helpers");
 const {ERRORS, USER_ROLES, EMAIL} = require("../../utils/constants");
 
 const UserService = require("../services/user.service");
@@ -12,7 +12,7 @@ const SESEmailSendService = require("../services/ses_email_send.service");
 
 router.get('/', authenticate, async (req, res) => {
   try {
-    if(req.auth.role != USER_ROLES.ADMIN) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    if(req.auth.role != USER_ROLES.ADMIN) TE(ERRORS.UNAUTHORIZED_USER);
     else {
       let limit = ~~req.query.limit;
       let page = ~~req.query.page;
@@ -30,7 +30,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:user_id', authenticate, async (req, res) => {
   try {
-    if(req.auth.id != req.params.user_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    if(req.auth.id != req.params.user_id) TE(ERRORS.UNAUTHORIZED_USER);
     else {
       let user = await UserService.find_by_id(req.auth.id);
       ReS(res, {
@@ -131,7 +131,7 @@ router.post('/change_password', async (req, res) => {
 
 router.post('/:user_id/change_password', authenticate, async (req, res) => {
   try {
-    if(req.auth.id != req.params.user_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    if(req.auth.id != req.params.user_id) TE(ERRORS.UNAUTHORIZED_USER);
     let password_changed_successfully = await UserService.change_password(req.body.new_password, null, req.params.user_id, req.body.old_password);
     ReS(res, {
       password_changed_successfully
@@ -144,13 +144,13 @@ router.post('/:user_id/change_password', authenticate, async (req, res) => {
 router.post('/:user_id/deactivate', authenticate, async (req, res) => {
   try {
     if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE) {
-      ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      TE(ERRORS.UNAUTHORIZED_USER);
     }
 
     if(req.auth.role == USER_ROLES.INSTITUTE) {
       let qari = await QariService.find_by_user_id(req.params.user_id);
       if(!qari || qari.institute != req.auth.role_id) {
-        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+        TE(ERRORS.UNAUTHORIZED_USER);
       }
     }
 
@@ -166,13 +166,13 @@ router.post('/:user_id/deactivate', authenticate, async (req, res) => {
 router.post('/:user_id/activate', authenticate, async (req, res) => {
   try {
     if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE) {
-      ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+      TE(ERRORS.UNAUTHORIZED_USER);
     }
 
     if(req.auth.role == USER_ROLES.INSTITUTE) {
       let qari = await QariService.find_by_user_id(req.params.user_id);
       if(!qari || qari.institute != req.auth.role_id) {
-        ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+        TE(ERRORS.UNAUTHORIZED_USER);
       }
     }
 

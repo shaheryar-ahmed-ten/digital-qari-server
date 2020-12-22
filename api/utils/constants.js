@@ -33,7 +33,8 @@ module.exports.ERRORS = {
     SLOTS_ALREADY_BOOKED: "The provided slot(s) have already been booked",
     SLOTS_DO_NOT_EXIST: "The provided slot(s) do not exist",
     FREE_TRIALS_FINISHED: "No more free trials available",
-    FREE_TRIALS_DEADLINE_ENDED: "Your free trial availability deadline has ended"
+    FREE_TRIALS_DEADLINE_ENDED: "Your free trial availability deadline has ended",
+    INVALID_SLOT_STATUS: "Invalid slot status"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;

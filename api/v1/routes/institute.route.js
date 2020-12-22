@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const {ReS, ReE, authenticate} = require("../../utils/helpers");
+const {ReS, ReE, authenticate, TE} = require("../../utils/helpers");
 const {ERRORS, USER_ROLES} = require("../../utils/constants");
 
 const InstituteService = require("../services/institute.service");
@@ -49,7 +49,7 @@ router.get('/:institute_id', async (req, res) => {
 
 router.put('/:institute_id', authenticate, async (req, res) => {
   try {
-    if(req.auth.role != USER_ROLES.ADMIN && req.auth.role_id != req.params.institute_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
+    if(req.auth.role != USER_ROLES.ADMIN && req.auth.role_id != req.params.institute_id) TE(ERRORS.UNAUTHORIZED_USER);
     else {
       let institute = await InstituteService.update(req.params.institute_id, req.body);
       ReS(res, {

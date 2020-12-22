@@ -71,7 +71,12 @@ class QariService extends UserRoleService {
             if (slot_inserted_obj[slot_num] !== undefined && status === SLOT_STATUS.UNASSIGNED) {
                 delete slot_inserted_obj[slot_num];
             } else {
-                slot_inserted_obj[slot_num] = status;
+                status = ~~status;
+                if(Object.values(SLOT_STATUS).some(slot_status => slot_status === status)) {
+                    slot_inserted_obj[slot_num] = ~~status;
+                } else {
+                    TE(ERRORS.INVALID_SLOT_STATUS);
+                }
             }
 
             qari["calendar"].set(slot_day, slot_inserted_obj);
