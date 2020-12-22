@@ -1,10 +1,9 @@
-const { Qari } = require("../../models");
+const { Qari, Booking } = require("../../models");
 
 const UserRoleService = require("./user_role.service");
 const S3FileUploadService = require("./s3_file_upload.service");
-const BookingService = require("./booking.service");
 const { TE } = require("../../utils/helpers");
-const { SLOT_STATUS } = require("../../utils/constants");
+const { SLOT_STATUS, ERRORS } = require("../../utils/constants");
 
 class QariService extends UserRoleService {
     constructor() {
@@ -84,12 +83,11 @@ class QariService extends UserRoleService {
         }
     }
 
-    async assign_bulk_slots(qari_id, slots, options) {
+    async assign_slots(qari_id, slots, options) {
         try {
             let qari = await this.find_by_id(qari_id);
 
             let calendar = qari["calendar"].toJSON();
-
 
             for(let slot_day in slots){
 
@@ -97,10 +95,12 @@ class QariService extends UserRoleService {
     
                 let slot_inserted_obj = calendar[slot_day];
                 for(let slot_num in slots[slot_day]){
-                    if (slots[slot_day][slot_num] === SLOT_STATUS.UNASSIGNED) {
-                        delete slot_inserted_obj[slot_num];
+                    if(calendar[slot_day][slot_num] === SLOT_STATUS.UNAVAILABLE) {
+                        TE(ERRORS.SLOTS_ALREADY_BOOKED);  
+                    } else if(calendar[slot_day][slot_num] === undefined || calendar[slot_day][slot_num] === SLOT_STATUS.UNASSIGNED) {
+                        TE(ERRORS.SLOTS_DO_NOT_EXIST);
                     } else {
-                        slot_inserted_obj[slot_num] = slots[slot_day][slot_num];
+                        slot_inserted_obj[slot_num] = SLOT_STATUS.UNAVAILABLE;
                     }
                 }
                 qari["calendar"].set(slot_day, slot_inserted_obj);
@@ -130,7 +130,7 @@ class QariService extends UserRoleService {
 
     async get_students(qari_id) {
         try {
-            let {documents: bookings} = await BookingService.find({
+            let bookings = await Booking.find({
                 qari: qari_id
             });
 

@@ -31,6 +31,10 @@ let student_schema = new mongoose.Schema({
     },
     payment_due_date: {
         type: Date
+    },
+    free_trials: {
+        type: Number,
+        default: 3
     }
 }, {
     timestamps: true

@@ -29,7 +29,11 @@ module.exports.ERRORS = {
     SESSION_START_TIME_REQUIRED: "Session start time is required",
     SESSION_END_TIME_REQUIRED: "Session end time is required",
     INVALID_OTP: "Invalid one-time passcode",
-    USER_ALREADY_VERIFIED: "User is already verified"
+    USER_ALREADY_VERIFIED: "User is already verified",
+    SLOTS_ALREADY_BOOKED: "The provided slot(s) have already been booked",
+    SLOTS_DO_NOT_EXIST: "The provided slot(s) do not exist",
+    FREE_TRIALS_FINISHED: "No more free trials available",
+    FREE_TRIALS_DEADLINE_ENDED: "Your free trial availability deadline has ended"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;
