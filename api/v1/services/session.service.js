@@ -11,10 +11,8 @@ class SessionService extends CrudService {
     super(Session);
   }
 
-  async start(obj) {
+  async join(session_id, user_id) {
     try {
-      let {session_id, user_id} = obj;
-
       let session = await this.find_by_id(session_id);
       if(session.qari != user_id && session.student != user_id) TE(ERRORS.UNAUTHORIZED_USER);
 

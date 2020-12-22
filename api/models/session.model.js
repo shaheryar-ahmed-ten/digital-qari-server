@@ -22,6 +22,14 @@ let session_schema = new mongoose.Schema({
     recording_link: {
         type: String
     },
+    held: {
+        type: Boolean,
+        default: false
+    },
+    free_trial: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 });
