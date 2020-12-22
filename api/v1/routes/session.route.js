@@ -7,17 +7,19 @@ const SessionService = require('../services/session.service');
 
 router.get('/', authenticate, async (req, res) => {
   try {
-    let { documents: sessions } = await SessionService.find({
-      $or: [
-        {
-          qari: req.auth.role_id
-        },
-        {
-          student: req.auth.role_id
-        }
-      ],
-      free_trial: req.query.free_trials ? req.query.free_trials : false
-    });
+    let filters = {};
+    filters['$or'] =[
+      {
+        qari: req.auth.role_id
+      },
+      {
+        student: req.auth.role_id
+      }
+    ];
+    if(req.query.free_trials) {
+      filters['free_trial'] = req.query.free_trials;
+    }
+    let { documents: sessions } = await SessionService.find(filters);
 
     ReS(res, {
       sessions
