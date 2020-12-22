@@ -18,7 +18,7 @@ router.get('/all', async (req, res) => {
       qaris
     });
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
       total_count
     });
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -53,7 +53,7 @@ router.get('/:qari_id', async (req, res) => {
       qari
     });
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -65,7 +65,7 @@ router.get('/:qari_id/students', authenticate, async (req, res) => {
       students
     })
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -88,7 +88,7 @@ router.put('/:qari_id', authenticate, async (req, res) => {
     });
 
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -114,7 +114,7 @@ router.post('/:qari_id/assign_slot', authenticate, async (req, res) => {
       qari
     });
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 

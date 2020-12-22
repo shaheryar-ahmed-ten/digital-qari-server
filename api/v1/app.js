@@ -48,7 +48,7 @@ app.use('/sessions', session_router);
 
 app.use(function(err, req, res, next) {
   if(err.name === 'UnauthorizedError') {
-    ReE(res, err, 422);
+    ReE(res, err);
     logger.error(err);
     return;
   }

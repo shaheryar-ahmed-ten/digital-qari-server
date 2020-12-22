@@ -45,7 +45,7 @@ router.get('/calendar', authenticate, async (req, res) => {
       report
     });
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -60,7 +60,7 @@ router.get('/institute', authenticate, async (req, res) => {
       });
     }
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -77,7 +77,7 @@ router.get('/institute/:institute_id', authenticate, async (req, res) => {
       });
     }
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 

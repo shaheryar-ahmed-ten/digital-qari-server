@@ -13,7 +13,7 @@ router.get('/all', async (req, res) => {
       institutes
     });
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
       total_count
     });
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -43,7 +43,7 @@ router.get('/:institute_id', async (req, res) => {
       institute
     });
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -57,7 +57,7 @@ router.put('/:institute_id', authenticate, async (req, res) => {
       });
     }
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 

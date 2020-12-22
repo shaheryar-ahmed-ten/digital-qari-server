@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const express_jwt = require('express-jwt');
 
 const mongoose = require("mongoose");
-const { HEADERS } = require('./constants');
+const { HEADERS, ERRORS } = require('./constants');
 
 module.exports.convert_to_object_id = function (id) {
     return mongoose.Types.ObjectId(id);
@@ -18,6 +18,7 @@ module.exports.ReE = function (res, err, code = 422) { // Error Web Response
     }
 
     if (typeof code !== 'undefined') res.statusCode = code;
+    if(err === ERRORS.UNAUTHORIZED_USER) res.statusCode = 401;
 
     return res.json({ success: false, error: err });
 };

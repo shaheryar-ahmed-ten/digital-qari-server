@@ -18,7 +18,7 @@ router.post('/', async(req, res) => {
 
     ReS(res);
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 

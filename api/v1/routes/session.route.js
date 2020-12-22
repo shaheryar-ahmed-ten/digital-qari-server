@@ -25,7 +25,7 @@ router.get('/', authenticate, async (req, res) => {
       sessions
     });
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -38,7 +38,7 @@ router.post('/:session_id/join', authenticate, async (req, res) => {
     });
 
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -46,7 +46,7 @@ router.post('/:session_id/leave', authenticate, async (req, res) => {
   try {
 
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 

@@ -24,7 +24,7 @@ router.get('/', authenticate, async (req, res) => {
     }
     
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -38,7 +38,7 @@ router.get('/:user_id', authenticate, async (req, res) => {
       });
     }
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -54,7 +54,7 @@ router.post('/', async (req, res, next) => {
       user
     });
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -85,7 +85,7 @@ router.post('/:user_id/verify', authenticate, async (req, res) => {
       verified
     });
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -99,7 +99,7 @@ router.post('/:user_id/resend_otp', authenticate, async (req, res) => {
       resent_otp
     });
   } catch (err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 })
 
@@ -114,7 +114,7 @@ router.post('/change_password_request', async(req, res) => {
 
     ReS(res);
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 })
 
@@ -125,7 +125,7 @@ router.post('/change_password', async (req, res) => {
       password_changed_successfully
     });
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
@@ -137,7 +137,7 @@ router.post('/:user_id/change_password', authenticate, async (req, res) => {
       password_changed_successfully
     });
   } catch(err) {
-    ReE(res, err, 422);
+    ReE(res, err);
   }
 });
 
