@@ -40,6 +40,15 @@ let qari_schema = new mongoose.Schema({
     english_fluency: {
         type: String,
     },
+    description: {
+        type: String
+    },
+    certifications: {
+        type: [{
+            name: String,
+            date: Date
+        }]
+    },
     fee: {
         type: Number,
         required: true,
