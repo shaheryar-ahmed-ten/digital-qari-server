@@ -2,6 +2,7 @@ const { Qari } = require("../../models");
 
 const UserRoleService = require("./user_role.service");
 const S3FileUploadService = require("./s3_file_upload.service");
+const BookingService = require("./booking.service");
 const { TE } = require("../../utils/helpers");
 const { SLOT_STATUS } = require("../../utils/constants");
 
@@ -21,7 +22,7 @@ class QariService extends UserRoleService {
 
     async update(id, fields) {
         try {
-          let qari = await Qari.findById(id);
+          let qari = await this.Model.findById(id);
           let recitation = fields.recitation;
           if(recitation) {
               fields.recitation = await S3FileUploadService.upload_file(`${qari.user._id}-recitation`, recitation.file);
@@ -34,11 +35,11 @@ class QariService extends UserRoleService {
 
     async find_by_institute_id(institute_id) {
         try {
-            let documents = await Qari.find({
+            let documents = await this.Model.find({
                 institute: institute_id
             });
 
-            let total_count = await Qari.countDocuments({
+            let total_count = await this.Model.countDocuments({
                 institute: institute_id
             });
 
@@ -50,8 +51,8 @@ class QariService extends UserRoleService {
 
     async get_all_calendars() {
         try {
-            let documents = await Qari.find().select("calendar").lean();
-            let total_count = await Qari.countDocuments();
+            let documents = await this.Model.find().select("calendar").lean();
+            let total_count = await this.Model.countDocuments();
 
             return { documents, total_count };
         } catch (err) {
@@ -122,6 +123,23 @@ class QariService extends UserRoleService {
                 return doc;
             })
             return { documents };
+        } catch (err) {
+            TE(err);
+        }
+    }
+
+    async get_students(qari_id) {
+        try {
+            let {documents: bookings} = await BookingService.find({
+                qari: qari_id
+            });
+
+            let students = [];
+            bookings.forEach(booking => {
+                students.push(booking.student);
+            });
+
+            return {students};
         } catch (err) {
             TE(err);
         }

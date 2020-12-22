@@ -57,6 +57,18 @@ router.get('/:qari_id', async (req, res) => {
   }
 });
 
+router.get('/:qari_id/students', authenticate, async (req, res) => {
+  try {
+    let {students} = await QariService.get_students(req.params.qari_id);
+
+    ReS(res, {
+      students
+    })
+  } catch(err) {
+    ReE(res, err, 422);
+  }
+});
+
 router.put('/:qari_id', authenticate, async (req, res) => {
   try {
     if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.qari_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);

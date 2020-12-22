@@ -20,6 +20,16 @@ let booking_schema = new mongoose.Schema({
   }
 });
 
+function find_handler(next) {
+  this.populate('qari');
+  this.populate('student');
+  next();
+}
+
+booking_schema.pre('find', find_handler);
+booking_schema.pre('findOne', find_handler);
+booking_schema.pre('findById', find_handler);
+
 let Booking = mongoose.model(MODEL.BOOKING, booking_schema, COLLECTION.BOOKINGS);
 
 module.exports = { Booking };
