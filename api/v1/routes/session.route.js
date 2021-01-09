@@ -31,7 +31,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.post('/:session_id/join', authenticate, async (req, res) => {
   try {
-    let session = await SessionService.join(session_id, req.auth.role_id);
+    let session = await SessionService.join(req.params.session_id, req.auth.role_id);
 
     ReS(res, {
       session
