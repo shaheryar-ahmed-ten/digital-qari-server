@@ -34,7 +34,7 @@ class BookingService extends CrudService {
       async function create_session(qari_id, student_id, date, slot) {
         try {
           date.setDate(date.getDate()+7);
-          date.setHours(0, slot*30, 0, 0);
+          date.setHours(0, (slot-1)*30, 0, 0);
           
           await SessionService.create({
             qari: qari_id,
@@ -126,7 +126,7 @@ class BookingService extends CrudService {
          date = new Date(date);
         // date.setDate(date.getDate() + (DAYS_OF_WEEK[day] + 7 - date.getDay()) % 7);
 
-        date.setHours(0, slot*30, 0, 0);
+        date.setHours(0, (slot - 1)*30, 0, 0);
 
         transactionSession = await db.startSession();
         
