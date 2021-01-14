@@ -121,10 +121,10 @@ class BookingService extends CrudService {
       try {
         let {qari_id, student_id, qari_slot} = obj;
         
-        let {day, slot} = qari_slot;
+        let {day, slot, date} = qari_slot;
 
-        let date = new Date();
-        date.setDate(date.getDate() + (DAYS_OF_WEEK[day] + 7 - date.getDay()) % 7);
+         date = new Date(date);
+        // date.setDate(date.getDate() + (DAYS_OF_WEEK[day] + 7 - date.getDay()) % 7);
 
         date.setHours(0, slot*30, 0, 0);
 
