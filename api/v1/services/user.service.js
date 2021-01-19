@@ -10,21 +10,17 @@ const StudentService = require("./student.service");
 const S3FileUploadService = require("./s3_file_upload.service");
 const SNSSMSSendService = require("./sns_sms_send.service");
 
-const OTPGenerator = require('otp-generator')
+const OTPGenerator = require('otp-generator');
+const CrudService = require("./crud.service");
 
-class UserService {
+class UserService extends CrudService {
+    constructor() {
+        super(User);
+    }
+
     async find_by_email(email) {
         try {
             let user = await User.findOne({ email });
-            return user;
-        } catch (err) {
-            TE(err);
-        }
-    }
-
-    async find_by_id(id) {
-        try {
-            let user = await User.findById(id);
             return user;
         } catch (err) {
             TE(err);
