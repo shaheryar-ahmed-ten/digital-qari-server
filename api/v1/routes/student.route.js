@@ -61,7 +61,7 @@ router.put('/:student_id', authenticate, async (req, res) => {
   try {
     if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.student_id) ReE(res, ERRORS.UNAUTHORIZED_USER, 401);
 
-    student = await StudentService.update(req.params.student_id, student);
+    let student = await StudentService.update(req.params.student_id, req.body);
     ReS(res, {
       student
     });
