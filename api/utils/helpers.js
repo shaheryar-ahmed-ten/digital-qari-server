@@ -40,7 +40,7 @@ module.exports.TE = TE = function (err_message, log = true) { // TE stands for T
         console.error(err_message);
     }
 
-    throw new Error(err_message);
+    throw err_message;
 };
 
 module.exports.create_token = auth => {

@@ -56,34 +56,33 @@ class UserService extends CrudService {
 
             if (user_obj["email"]) user_obj["email"] = user_obj["email"].toLowerCase();
 
+            await session.startTransaction();
             let user = new User(user_obj);
 
-            if(user_obj.role == USER_ROLES.QARI || user_obj.role == USER_ROLES.STUDENT) {
+            if (user_obj.role == USER_ROLES.STUDENT) {
                 user.otp = OTPGenerator.generate(6, { upperCase: true, specialChars: false });
             } else {
                 user.verified = true;
             }
 
             if (user_obj.role) await user_with_role.validate();
-            
-            await session.startTransaction();
-            
+
             await user.save({ session });
-            
+
             const snsdata = await SNSSMSSendService.send_sms(user_with_role.phone_number, SMS.OTP_SMS(user.otp));
             console.log("MSG", snsdata);
 
             user_with_role.user = user._id;
-            
+
             let picture = user_obj.picture;
             if (picture) {
                 user_with_role.picture = await S3FileUploadService.upload_file(`${user._id}-profile_picture`, picture);
             }
 
             const created_user_with_role = await role_service.create(user_with_role, { session });
-            
+
             await session.commitTransaction();
-            
+
             return created_user_with_role;
         } catch (err) {
             await session.abortTransaction();
@@ -194,7 +193,7 @@ class UserService extends CrudService {
     async verify(user_id, otp) {
         try {
             let user = await User.findById(user_id);
-            if(user.otp == otp) {
+            if (user.otp == otp) {
                 user.verified = true;
                 await user.save();
             } else {
@@ -213,7 +212,7 @@ class UserService extends CrudService {
 
             let role_service;
 
-            switch(role) {
+            switch (role) {
                 case USER_ROLES.QARI:
                     role_service = QariService;
                     break;
@@ -224,10 +223,10 @@ class UserService extends CrudService {
                     TE(ERRORS.UNAUTHORIZED_USER);
                     break;
             }
-            
-            if(user.verified) TE(ERRORS.USER_ALREADY_VERIFIED);
 
-            user.otp = OTPGenerator.generate(6, {upperCase: true, specialChars: false});
+            if (user.verified) TE(ERRORS.USER_ALREADY_VERIFIED);
+
+            user.otp = OTPGenerator.generate(6, { upperCase: true, specialChars: false });
 
             let phone_number = (await role_service.find_by_id(role_id)).phone_number;
 

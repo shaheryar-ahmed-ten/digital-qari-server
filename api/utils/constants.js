@@ -34,7 +34,9 @@ module.exports.ERRORS = {
     SLOTS_DO_NOT_EXIST: "The provided slot(s) do not exist",
     FREE_TRIALS_FINISHED: "No more free trials available",
     FREE_TRIALS_DEADLINE_ENDED: "Your free trial availability deadline has ended",
-    INVALID_SLOT_STATUS: "Invalid slot status"
+    INVALID_SLOT_STATUS: "Invalid slot status",
+    NOT_ALLOWED_IN_SESSION: "You are not authorized for this session",
+    INVALID_SESSION: "Either this session is expired or you are not authorized",
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;

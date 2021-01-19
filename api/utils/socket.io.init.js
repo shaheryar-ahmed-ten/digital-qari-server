@@ -1,12 +1,12 @@
 module.exports.socket_io_init = (server) => {
-  let PeerServer = require('peer').PeerServer;
+  // let PeerServer = require('peer').PeerServer;
   const io = require('socket.io').listen(server);
   
-  let peerServer = new PeerServer({
-    port: 3002,
-    path: '/',
-    host: '/'
-  });
+  // let peerServer = new PeerServer({
+  //   port: 3002,
+  //   path: '/',
+  //   host: '/'
+  // });
 
   io.on('connection', socket => {
     socket.on('join-classroom', (roomId, userId) => {

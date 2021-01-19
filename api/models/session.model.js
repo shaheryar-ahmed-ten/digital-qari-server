@@ -34,6 +34,15 @@ let session_schema = new mongoose.Schema({
     timestamps: true
 });
 
+function find_handler(next) {
+    this.populate('qari');
+    this.populate('student');
+    this.sort({ start_time: -1 })
+    next();
+}
+
+session_schema.pre('find', find_handler);
+
 session_schema.post('save', function (error, doc, next) {
     if (error.name === 'MongoError' && error.code === 11000) {
         next('Phone number already used');
