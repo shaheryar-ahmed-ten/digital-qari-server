@@ -5,6 +5,7 @@ const { Qari } = require("./qari.model");
 const { Student } = require("./student.model");
 const { Booking } = require("./booking.model");
 const { Session } = require("./session.model");
+const { PaymentPlan } = require("./payment_plan.model");
 
 module.exports = {
     User,
@@ -13,5 +14,6 @@ module.exports = {
     Qari,
     Student,
     Booking,
-    Session
+    Session,
+    PaymentPlan
 };

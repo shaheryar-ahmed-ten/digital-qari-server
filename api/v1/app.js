@@ -13,11 +13,10 @@ const student_router = require("./routes/student.route");
 const report_router = require("./routes/report.route");
 const booking_router = require("./routes/booking.route");
 const session_router = require("./routes/session.route");
+const payment_plan_router = require("./routes/payment_plan.route");
 
 const {ReE} = require("../utils/helpers");
 const { HEADERS } = require('../utils/constants');
-
-require('../utils/db.js');
 
 // Add headers
 app.use(function (req, res, next) {
@@ -35,6 +34,7 @@ app.use(express.urlencoded({ limit: '16mb', extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+require('../utils/db.js');
 require('../utils/passport.init');
 
 app.use('/users', user_router);
@@ -45,6 +45,7 @@ app.use('/students', student_router);
 app.use('/reports', report_router);
 app.use('/bookings', booking_router);
 app.use('/sessions', session_router);
+app.use('/payment_plans', payment_plan_router);
 
 app.use(function(err, req, res, next) {
   if(err.name === 'UnauthorizedError') {

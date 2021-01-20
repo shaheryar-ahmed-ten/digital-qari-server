@@ -7,6 +7,7 @@ const CrudService = require("./crud.service");
 const StudentService = require("./student.service");
 const SessionService = require("./session.service");
 const QariService = require("./qari.service");
+const PaymentPlanService = require("./payment_plan.service");
 
 class BookingService extends CrudService {
     constructor() {
@@ -20,7 +21,7 @@ class BookingService extends CrudService {
         try {
           let student = await StudentService.find_by_id(student_id);
 
-          if(!(payment_plan in PAYMENT_PLANS)) TE(ERRORS.INVALID_PAYMENT_PLAN);
+          if(!PaymentPlanService.exists(payment_plan)) TE(ERRORS.INVALID_PAYMENT_PLAN);
   
           student.payment_plan = payment_plan;
           student.payment_due_date = payment_due_date;
@@ -81,7 +82,8 @@ class BookingService extends CrudService {
 
         await transactionSession.startTransaction();
 
-        let months = PAYMENT_PLANS[payment_plan].payment_frequency;
+        payment_plan = await PaymentPlanService.find_by_id(payment_plan);
+        let months = payment_plan.frequency;
   
         let payment_due_date = new Date();
         payment_due_date.setMonth(payment_due_date.getMonth()+months);
@@ -94,7 +96,8 @@ class BookingService extends CrudService {
         let booking = new Booking({
           qari: qari_id,
           student: student_id,
-          amount
+          amount,
+          payment_plan
         });
 
         if(is_admin) {

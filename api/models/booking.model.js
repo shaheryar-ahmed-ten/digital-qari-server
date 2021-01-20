@@ -14,6 +14,10 @@ let booking_schema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  payment_plan: {
+    type: mongoose.Types.ObjectId,
+    ref: MODEL.PAYMENT_PLAN
+  },
   isActive: {
     type: Boolean,
     default: true

@@ -1,14 +1,23 @@
 module.exports.ERRORS = {
     MONGODB_CONNECTION_FAILED: "MongoDB connection failed",
     MONGODB_CONNECTION_SUCCESSFUL: "MongoDB connection successful",
+
     INVALID_EMAIL: "Invalid email",
     INVALID_PASSWORD: "Invalid password",
     INVALID_CREDENTIALS: "Invalid credentials",
+    INVALID_PAYMENT_PLAN: "Invalid payment plan",
+    INVALID_OTP: "Invalid one-time passcode",
+    INVALID_SLOT_STATUS: "Invalid slot status",
+    INVALID_PAYMENT_PLAN: "Invalid payment plan",
+
     USER_NOT_FOUND: "User not found",
+    USER_ALREADY_VERIFIED: "User is already verified",
     UNAUTHORIZED_USER: "User unauthorized",
+    
     PASSWORDS_DONT_MATCH: "Passwords do not match",
     ACCOUNT_IS_INACTIVE: "Account is inactive",
     TOKEN_EXPIRED: "Token expired",
+
     EMAIL_REQUIRED: "Email is required",
     EMAIL_NOT_UNIQUE: "Email is already used",
     PASSWORD_REQUIRED: "Password is required",
@@ -21,19 +30,23 @@ module.exports.ERRORS = {
     INSTITUTE_REQUIRED: "Institute is required",
     DATE_OF_BIRTH_REQUIRED: "Date of birth is required",
     GENDER_REQUIRED: "Gender is required",
+    
+    PAYMENT_PLAN_NAME_REQUIRED: "Payment plan name is required",
+    PAYMENT_PLAN_FREQUENCY_REQUIRED: "Payment plan frequency is required",
+    PAYMENT_PLAN_RECURRENCE_REQUIRED: "Payment plan recurrence is required",
     PAYMENT_PLAN_REQUIRED: "Payment plan is required",
     PAYMENT_DUE_DATE_REQUIRED: "Payment due date is required",
-    INVALID_PAYMENT_PLAN: "Invalid payment plan",
+    
     QARI_REQUIRED: "Qari is required",
     STUDENT_REQUIRED: "Student is required",
     SESSION_START_TIME_REQUIRED: "Session start time is required",
     SESSION_END_TIME_REQUIRED: "Session end time is required",
-    INVALID_OTP: "Invalid one-time passcode",
-    USER_ALREADY_VERIFIED: "User is already verified",
     SLOTS_ALREADY_BOOKED: "The provided slot(s) have already been booked",
     SLOTS_DO_NOT_EXIST: "The provided slot(s) do not exist",
+
     FREE_TRIALS_FINISHED: "No more free trials available",
     FREE_TRIALS_DEADLINE_ENDED: "Your free trial availability deadline has ended",
+    
     INVALID_SLOT_STATUS: "Invalid slot status",
     NOT_ALLOWED_IN_SESSION: "You are not authorized for this session",
     INVALID_SESSION: "Either this session is expired or you are not authorized",
@@ -49,7 +62,8 @@ module.exports.MODEL = {
     CLASSROOM: "classroom",
     STUDENT: "student",
     BOOKING: "booking",
-    SESSION: "session"
+    SESSION: "session",
+    PAYMENT_PLAN: "payment_plan"
 };
 
 module.exports.COLLECTION = {
@@ -60,7 +74,8 @@ module.exports.COLLECTION = {
     CLASSROOMS: "classrooms",
     STUDENTS: "students",
     BOOKINGS: "bookings",
-    SESSIONS: "sessions"
+    SESSIONS: "sessions",
+    PAYMENT_PLANS: "payment_plans"
 };
 
 module.exports.REGEX = {
