@@ -117,6 +117,13 @@ module.exports.PAYMENT_PLANS = {
     }
 };
 
+module.exports.SESSION_RECORDING_STATUS = {
+    RECORDING_NOT_STARTED: 0,
+    RECORDING_STARTED: 1,
+    RECORDING_STOPPED: 2,
+    RECORDING_FAILED: 3
+}
+
 module.exports.HEADERS = {
     X_AUTH_TOKEN: 'x-auth-token'
 }

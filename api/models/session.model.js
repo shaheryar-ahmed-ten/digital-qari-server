@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { MODEL, COLLECTION, ERRORS } = require("../utils/constants");
+const { MODEL, COLLECTION, ERRORS, SESSION_RECORDING_STATUS } = require("../utils/constants");
 
 let session_schema = new mongoose.Schema({
     qari: {
@@ -19,16 +19,23 @@ let session_schema = new mongoose.Schema({
     end_time: {
         type: Date,
     },
-    recording_link: {
+    recording_status: {
+        type: Number,
+        default: SESSION_RECORDING_STATUS.RECORDING_NOT_STARTED,
+        required: true
+    },
+    recording_task_id: {
         type: String
     },
-    held: {
-        type: Boolean,
-        default: false
+    recording_link: {
+        type: String
     },
     free_trial: {
         type: Boolean,
         default: false
+    },
+    recording_bot_verification_code: {
+        type: String
     }
 }, {
     timestamps: true
