@@ -27,7 +27,8 @@ let student_schema = new mongoose.Schema({
         type: String,
     },
     payment_plan: {
-        type: String
+        type: mongoose.Types.ObjectId,
+        required: true
     },
     payment_due_date: {
         type: Date
