@@ -53,11 +53,18 @@ class SessionService extends CrudService {
     }
   }
 
-  async verify_recording_bot_code(session_id, incoming_code) {
+  async join_recording_bot_code(session_id, incoming_code) {
     try {
       let session = await this.find_by_id(session_id);
       if(session.recording_bot_verification_code === incoming_code) return true;
-      return false;
+
+      let meeting = await ChimeMeetingService.create_meeting(session_id);
+      let attendee = await ChimeMeetingService.create_attendee(meeting.Meeting.MeetingId, incoming_code);
+
+      return {
+        ...meeting,
+        ...attendee
+      };
     } catch (err) {
       TE(err);
     }
