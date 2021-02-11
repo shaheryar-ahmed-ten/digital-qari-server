@@ -57,10 +57,10 @@ router.post('/:session_id/leave', authenticate, async (req, res) => {
 
 router.post('/:session_id/join_recording_bot', async (req, res) => {
   try {
-    let verification_successful = await SessionService.join_recording_bot_code(req.params.session_id, req.body.recording_bot_verification_code);
+    let session = await SessionService.join_recording_bot_code(req.params.session_id, req.body.recording_bot_verification_code);
 
     ReS(res, {
-      verification_successful
+      session
     });
 
   } catch(err) {

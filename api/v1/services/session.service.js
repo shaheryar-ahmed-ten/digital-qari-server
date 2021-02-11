@@ -22,25 +22,27 @@ class SessionService extends CrudService {
         let meeting = await ChimeMeetingService.create_meeting(session_id);
         let attendee = await ChimeMeetingService.create_attendee(meeting.Meeting.MeetingId, user_id);
 
-        let recording_bot_verification_code = Buffer.from(+new Date() + session._id).toString('base64');
-        
-        let recording_api_url = `${process.env.RECORDING_API}?recordingAction=start&meetingURL=${process.env.CLASSROOM_URL}?sessionId==${session_id}&recording=true&recording_bot_verification_code=${recording_bot_verification_code}`;
-        console.log(recording_api_url);
-        let response = await axios.post(recording_api_url, null, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210205/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=641122e8cff82fa7f3794c23da7f73ed806ab1e7048e42fdf798fc76fe9bc2c1'
-          }
-        });
-        let task_id = response.data;
-        task_id = task_id.split("/");
-        task_id = task_id[task_id.length-1];
-        
-        session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STARTED;
-        session.recording_task_id = task_id;
-        session.recording_bot_verification_code = recording_bot_verification_code;
-        
-        await session.save();
+        if(session.recording_status !== SESSION_RECORDING_STATUS.RECORDING_STARTED) {
+          let recording_bot_verification_code = Buffer.from(+new Date() + session._id).toString('base64');
+          
+          let recording_api_url = `${process.env.RECORDING_API}?recordingAction=start&meetingURL=${process.env.CLASSROOM_URL}?sessionId==${session_id}&recording=true&recording_bot_verification_code=${recording_bot_verification_code}`;
+          console.log(recording_api_url);
+          let response = await axios.post(recording_api_url, null, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210205/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=641122e8cff82fa7f3794c23da7f73ed806ab1e7048e42fdf798fc76fe9bc2c1'
+            }
+          });
+          let task_id = response.data;
+          task_id = task_id.split("/");
+          task_id = task_id[task_id.length-1];
+          
+          session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STARTED;
+          session.recording_task_id = task_id;
+          session.recording_bot_verification_code = recording_bot_verification_code;
+          
+          await session.save();
+        }
 
         return {
           ...meeting,
@@ -56,6 +58,7 @@ class SessionService extends CrudService {
   async join_recording_bot_code(session_id, incoming_code) {
     try {
       let session = await this.find_by_id(session_id);
+      if(!session) TE(ERRORS.INVALID_SESSION);
       if(session.recording_bot_verification_code === incoming_code) return true;
 
       let meeting = await ChimeMeetingService.create_meeting(session_id);
