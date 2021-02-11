@@ -22,7 +22,7 @@ class SessionService extends CrudService {
         let meeting = await ChimeMeetingService.create_meeting(session_id);
         let attendee = await ChimeMeetingService.create_attendee(meeting.Meeting.MeetingId, user_id);
 
-        if(session.recording_status !== SESSION_RECORDING_STATUS.RECORDING_STARTED) {
+        if(session.recording_status === SESSION_RECORDING_STATUS.RECORDING_NOT_STARTED) {
           let recording_bot_verification_code = Buffer.from(+new Date() + session._id).toString('base64');
           
           let recording_api_url = `${process.env.RECORDING_API}?recordingAction=start&meetingURL=${process.env.CLASSROOM_URL}?sessionId==${session_id}&recording=true&recording_bot_verification_code=${recording_bot_verification_code}`;
