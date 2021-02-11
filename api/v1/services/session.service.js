@@ -59,8 +59,8 @@ class SessionService extends CrudService {
     try {
       let session = await this.find_by_id(session_id);
       if(!session) TE(ERRORS.INVALID_SESSION);
-      if(session.recording_bot_verification_code === incoming_code) return true;
-
+      if(session.recording_bot_verification_code !== incoming_code) TE(ERRORS.INVALID_BOT_VERIFICATION_CODE);
+      
       let meeting = await ChimeMeetingService.create_meeting(session_id);
       let attendee = await ChimeMeetingService.create_attendee(meeting.Meeting.MeetingId, incoming_code);
 

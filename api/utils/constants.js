@@ -9,6 +9,7 @@ module.exports.ERRORS = {
     INVALID_OTP: "Invalid one-time passcode",
     INVALID_SLOT_STATUS: "Invalid slot status",
     INVALID_PAYMENT_PLAN: "Invalid payment plan",
+    INVALID_BOT_VERIFICATION_CODE: "Invalid bot verification code",
 
     USER_NOT_FOUND: "User not found",
     USER_ALREADY_VERIFIED: "User is already verified",
