@@ -38,7 +38,6 @@ class SessionService extends CrudService {
           
           session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STARTED;
           session.recording_task_id = task_id;
-          session.recording_task_id = 1;
           session.recording_bot_verification_code = recording_bot_verification_code;
           
           await session.save();
