@@ -36,6 +36,9 @@ let user_schema = new mongoose.Schema({
     verified: {
         type: Boolean,
         default: false
+    },
+    fcm_token: {
+        type: String
     }
 }, {
     timestamps: true

@@ -141,6 +141,19 @@ router.post('/:user_id/change_password', authenticate, async (req, res) => {
   }
 });
 
+router.put('/:user_id/update_fcm_token', authenticate, async (req, res) => {
+  try {
+    if(req.auth.id != req.params.user_id) TE(ERRORS.UNAUTHORIZED_USER);
+
+    let fcm_token_updated_successfully = await UserService.update_fcm_token(req.auth.id, req.body.fcm_token);
+    ReS(res, {
+      fcm_token_updated_successfully
+    });
+  } catch(err) {
+    ReE(res, err);
+  }
+});
+
 router.post('/:user_id/deactivate', authenticate, async (req, res) => {
   try {
     if(req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE) {

@@ -240,6 +240,21 @@ class UserService extends CrudService {
         }
     }
 
+    async update_fcm_token(user_id, fcm_token) {
+        try {
+            let user = await User.findById(user_id);
+            if(!user) TE(ERRORS.USER_NOT_FOUND);
+
+            user.fcm_token = fcm_token;
+
+            await user.save();
+
+            return true;
+        } catch (err) {
+            TE(err);
+        }
+    }
+
 }
 
 module.exports = new UserService();
