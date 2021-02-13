@@ -36,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 require('../utils/db.js');
 require('../utils/passport.init');
+require('../utils/firebase.init');
 
 app.use('/users', user_router);
 app.use('/admins', admin_router);
