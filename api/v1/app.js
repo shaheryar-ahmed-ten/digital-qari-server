@@ -14,6 +14,7 @@ const report_router = require("./routes/report.route");
 const booking_router = require("./routes/booking.route");
 const session_router = require("./routes/session.route");
 const payment_plan_router = require("./routes/payment_plan.route");
+const referral_router = require("./routes/referral.route");
 
 const {ReE} = require("../utils/helpers");
 const { HEADERS } = require('../utils/constants');
@@ -47,6 +48,7 @@ app.use('/reports', report_router);
 app.use('/bookings', booking_router);
 app.use('/sessions', session_router);
 app.use('/payment_plans', payment_plan_router);
+app.use('/referrals', referral_router);
 
 app.use(function(err, req, res, next) {
   if(err.name === 'UnauthorizedError') {

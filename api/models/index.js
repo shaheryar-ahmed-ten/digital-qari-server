@@ -6,6 +6,7 @@ const { Student } = require("./student.model");
 const { Booking } = require("./booking.model");
 const { Session } = require("./session.model");
 const { PaymentPlan } = require("./payment_plan.model");
+const { Referral } = require("./referral.model");
 
 module.exports = {
     User,
@@ -15,5 +16,6 @@ module.exports = {
     Student,
     Booking,
     Session,
-    PaymentPlan
+    PaymentPlan,
+    Referral
 };

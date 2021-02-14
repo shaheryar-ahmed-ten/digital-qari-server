@@ -33,6 +33,9 @@ let student_schema = new mongoose.Schema({
     payment_due_date: {
         type: Date
     },
+    referral_code: {
+        type: String
+    },
     free_trials: {
         type: Number,
         default: 3

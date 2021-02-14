@@ -61,6 +61,7 @@ class UserService extends CrudService {
 
             if (user_obj.role == USER_ROLES.STUDENT) {
                 user.otp = OTPGenerator.generate(6, { upperCase: true, specialChars: false });
+                user_with_role.referral_code = OTPGenerator.generate(8, { upperCase: true, specialChars: false });
             } else {
                 user.verified = true;
             }
@@ -69,8 +70,7 @@ class UserService extends CrudService {
 
             await user.save({ session });
 
-            const snsdata = await SNSSMSSendService.send_sms(user_with_role.phone_number, SMS.OTP_SMS(user.otp));
-            console.log("MSG", snsdata);
+            await SNSSMSSendService.send_sms(user_with_role.phone_number, SMS.OTP_SMS(user.otp));
 
             user_with_role.user = user._id;
 
