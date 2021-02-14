@@ -19,7 +19,7 @@ class UserRoleService extends CrudService {
         }
     }
 
-    async update(id, fields) {
+    async update(id, fields, options) {
         try {
             let document = await this.find_by_id(id);
             let {new_password, old_password} = fields;
@@ -35,7 +35,7 @@ class UserRoleService extends CrudService {
                     delete fields.old_password;
                     delete fields.new_password;
                 }
-                return super.update(id, fields);
+                return super.update(id, fields, options);
             } else {
                 TE(ERRORS.USER_NOT_FOUND);
             }

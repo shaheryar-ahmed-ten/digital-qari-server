@@ -17,7 +17,7 @@ class CrudService {
         }
     }
 
-    async update(id, fields) {
+    async update(id, fields, options) {
         try {
           let document = await this.Model.findById(id);
           let picture = fields.picture;
@@ -25,7 +25,7 @@ class CrudService {
               fields.picture = await S3FileUploadService.upload_file(`${document.user._id}-profile_picture`, picture);
           }
           Object.assign(document, fields);
-          await document.save();
+          await document.save(options);
           return document;
         } catch (err) {
           TE(err);
