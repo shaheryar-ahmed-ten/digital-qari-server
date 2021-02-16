@@ -21,8 +21,6 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-require("../api/utils/socket.io.init").socket_io_init(server);
-
 /**
  * Normalize a port into a number, string, or false.
  */
