@@ -36,7 +36,6 @@ class SessionService extends CrudService {
             }
           });
           let task_id = response.data;
-          console.log(task_id);
           task_id = task_id.split("/");
           task_id = task_id[task_id.length-1];
           
