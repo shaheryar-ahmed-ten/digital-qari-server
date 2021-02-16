@@ -61,7 +61,6 @@ class UserService extends CrudService {
 
             if (user_obj.role == USER_ROLES.STUDENT) {
                 user.otp = OTPGenerator.generate(6, { upperCase: true, specialChars: false });
-                user_with_role.referral_code = OTPGenerator.generate(8, { upperCase: true, specialChars: false });
             } else {
                 user.verified = true;
             }

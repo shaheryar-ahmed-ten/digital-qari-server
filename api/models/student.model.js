@@ -36,6 +36,17 @@ let student_schema = new mongoose.Schema({
     referral_code: {
         type: String
     },
+    reference: {
+        type: {
+            student_id: {
+                type: mongoose.Types.ObjectId,
+                ref: MODEL.STUDENT
+            },
+            discount: {
+                type: Number
+            }
+        }
+    },
     free_trials: {
         type: Number,
         default: 3
