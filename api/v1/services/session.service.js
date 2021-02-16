@@ -32,8 +32,8 @@ class SessionService extends CrudService {
           console.log(`${process.env.CLASSROOM_URL}?sessionId=${session_id}&recording_bot_verification_code=${recording_bot_verification_code}`);
           let response = await axios.post(recording_api_url, null, {
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210205/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=641122e8cff82fa7f3794c23da7f73ed806ab1e7048e42fdf798fc76fe9bc2c1'
+              'X-Amz-Date': '20210216T224257Z', 
+              'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210216/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=453a8391bfd7cb8069968d9538bfd921ace60a51bd62f5e2a91aec105fea1d92'
             }
           });
           let task_id = response.data;
