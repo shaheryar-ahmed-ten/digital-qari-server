@@ -29,6 +29,7 @@ class SessionService extends CrudService {
           let recording_bot_verification_code = Buffer.from(+new Date() + session._id).toString('base64');
           
           let recording_api_url = `${process.env.RECORDING_API}?recordingAction=start&meetingURL=${process.env.CLASSROOM_URL}?sessionId=${session_id}&recording_bot_verification_code=${recording_bot_verification_code}`;
+          console.log(`${process.env.CLASSROOM_URL}?sessionId=${session_id}&recording_bot_verification_code=${recording_bot_verification_code}`);
           let response = await axios.post(recording_api_url, null, {
             headers: {
               'Content-Type': 'application/json',
