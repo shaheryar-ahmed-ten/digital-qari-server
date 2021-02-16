@@ -28,12 +28,16 @@ router.get('/', async (req, res) => {
     let page = ~~req.query.page;
     let name = req.query.name;
     let institute = req.query.institute;
+    let referral_code = req.query.referral_code;
     const filters = {};
     if (name) {
       filters['name'] = new RegExp(name, "i");
     }
     if (institute) {
       filters['institute'] = convert_to_object_id(institute);
+    }
+    if (referral_code) {
+      filters['referral_code'] = referral_code;
     }
     let { documents: students, total_count } = await StudentService.get_all({ ...filters }, limit, page);
 
