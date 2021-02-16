@@ -33,6 +33,16 @@ class ChimeMeetingService {
       TE(err);
     }
   }
+
+  async end_meeting(meeting_id) {
+    try {
+      (await Chime.deleteMeeting({
+        MeetingId: meeting_id
+      }).promise());
+    } catch(err) {
+      TE(err);
+    }
+  }
 }
 
 module.exports = new ChimeMeetingService();

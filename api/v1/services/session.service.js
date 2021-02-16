@@ -20,6 +20,9 @@ class SessionService extends CrudService {
 
       else {
         let meeting = await ChimeMeetingService.create_meeting(session_id);
+
+        session.meeting_id = meeting.Meeting.MeetingId;
+
         let attendee = await ChimeMeetingService.create_attendee(meeting.Meeting.MeetingId, user_id);
 
         if(session.recording_status === SESSION_RECORDING_STATUS.RECORDING_NOT_STARTED) {
@@ -41,8 +44,8 @@ class SessionService extends CrudService {
           session.recording_task_id = task_id;
           session.recording_bot_verification_code = recording_bot_verification_code;
           
-          await session.save();
         }
+        await session.save();
 
         return {
           ...meeting,
@@ -77,19 +80,26 @@ class SessionService extends CrudService {
     try {
       let session = await this.find_by_id(session_id);
       
-      
-      let recording_api_url = `${process.env.RECORDING_API}?recordingAction=stop&taskId=${session.recording_task_id}`;
-      let response = await axios.post(recording_api_url, null, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210205/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=641122e8cff82fa7f3794c23da7f73ed806ab1e7048e42fdf798fc76fe9bc2c1'
-        }
-      });
-      let task = response.data.task;
-      let filename = task.createdAt + '.mp4';
-      session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STOPPED;
-      session.recording_link = filename;
+      if(session.recording_status !== SESSION_RECORDING_STATUS.RECORDING_STOPPED) {
+        let recording_api_url = `${process.env.RECORDING_API}?recordingAction=stop&taskId=${session.recording_task_id}`;
+        let response = await axios.post(recording_api_url, null, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210205/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=641122e8cff82fa7f3794c23da7f73ed806ab1e7048e42fdf798fc76fe9bc2c1'
+          }
+        });
+        let task = response.data.task;
+        let filename = task.createdAt + '.mp4';
+        session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STOPPED;
+        session.recording_link = filename;
+        await session.save();
+      }
+
+      await ChimeMeetingService.end_meeting(session.meeting_id);
+      session.held = true;
+
       await session.save();
+
       return session;
     } catch (err) {
       TE(err);

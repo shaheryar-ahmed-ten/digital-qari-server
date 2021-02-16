@@ -19,6 +19,9 @@ let session_schema = new mongoose.Schema({
     end_time: {
         type: Date,
     },
+    meeting_id: {
+        type: String
+    },
     recording_status: {
         type: Number,
         default: SESSION_RECORDING_STATUS.RECORDING_NOT_STARTED,
@@ -36,6 +39,10 @@ let session_schema = new mongoose.Schema({
     },
     recording_bot_verification_code: {
         type: String
+    },
+    held: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
