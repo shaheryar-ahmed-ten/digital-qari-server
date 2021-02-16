@@ -27,14 +27,14 @@ let student_schema = new mongoose.Schema({
         type: String,
     },
     payment_plan: {
-        type: mongoose.Types.ObjectId,
-        required: true
+        type: mongoose.Types.ObjectId
     },
     payment_due_date: {
         type: Date
     },
     referral_code: {
-        type: String
+        type: String,
+        unique: true
     },
     reference: {
         type: {
