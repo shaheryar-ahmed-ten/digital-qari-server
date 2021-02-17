@@ -12,7 +12,7 @@ class QariService extends UserRoleService {
 
     async create(obj, options) {
         try {
-            if(obj["recitation"]) obj.recitation = await S3FileUploadService.upload_file(`${obj.user}-recitation`, obj.recitation.file);
+            if(obj["recitation"]) obj.recitation = await S3FileUploadService.upload_file(`${obj.user}-recitation`, obj.recitation);
             return super.create(obj, options);
         } catch (err) {
             TE(err);
@@ -22,9 +22,8 @@ class QariService extends UserRoleService {
     async update(id, fields) {
         try {
           let qari = await this.Model.findById(id);
-          let recitation = fields.recitation;
-          if(recitation) {
-              fields.recitation = await S3FileUploadService.upload_file(`${qari.user._id}-recitation`, recitation.file);
+          if(fields.recitation) {
+              fields.recitation = await S3FileUploadService.upload_file(`${qari.user._id}-recitation`, fields.recitation);
           }
           return super.update(id, fields);
         } catch (err) {

@@ -18,6 +18,9 @@ let qari_schema = new mongoose.Schema({
     picture: {
         type: mongoose.Schema.Types.Mixed,
     },
+    recitation: {
+        type: mongoose.Schema.Types.Mixed,
+    },
     address: {
         type: String,
         required: [true, ERRORS.ADDRESS_REQUIRED]

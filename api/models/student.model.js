@@ -19,6 +19,9 @@ let student_schema = new mongoose.Schema({
         type: Date,
         required: [true, ERRORS.DATE_OF_BIRTH_REQUIRED]
     },
+    picture: {
+        type: mongoose.Schema.Types.Mixed,
+    },
     gender: {
         type: String,
         required: [true, ERRORS.GENDER_REQUIRED]
