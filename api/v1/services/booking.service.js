@@ -76,7 +76,7 @@ class BookingService extends CrudService {
       }
 
       try {
-        let {qari_id, student_id, payment_plan, qari_slots, amount, is_admin} = obj;
+        let {qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin} = obj;
 
         transactionSession = await this.Model.startSession();
 
@@ -96,15 +96,18 @@ class BookingService extends CrudService {
         let booking = new Booking({
           qari: qari_id,
           student: student_id,
-          amount,
+          qari_amount,
+          student_amount,
           payment_plan
         });
 
         if(is_admin) {
-          booking.amount = amount;
+          booking.student_amount = student_amount;
+          booking.qari_amount = qari_amount;
         } else {
           let qari = await QariService.find_by_id(qari_id);
-          booking.amount = qari.fee;
+          booking.student_amount = qari.fee;
+          booking.qari_amount = qari.fee;
         }
 
         await booking.save({session: transactionSession});

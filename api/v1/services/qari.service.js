@@ -118,7 +118,7 @@ class QariService extends UserRoleService {
         }
     }
 
-    async condensed_find(filters = {}, fields = "_id name calendar") {
+    async condensed_find(filters = {}, fields = "_id name calendar fee") {
         try {
             let documents = await this.Model.find(filters).select(fields).lean();
             documents = documents.map(doc => {

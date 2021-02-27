@@ -10,9 +10,12 @@ let booking_schema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: MODEL.STUDENT
   },
-  amount: {
+  qari_amount: {
     type: Number,
     required: true
+  },
+  student_amount: {
+
   },
   payment_plan: {
     type: mongoose.Types.ObjectId,
