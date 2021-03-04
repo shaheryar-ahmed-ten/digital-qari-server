@@ -43,6 +43,9 @@ module.exports.ERRORS = {
     STUDENT_REQUIRED: "Student is required",
     SESSION_START_TIME_REQUIRED: "Session start time is required",
     SESSION_END_TIME_REQUIRED: "Session end time is required",
+    SESSION_REVIEW_RATING_REQURIED: "Session rating is required",
+    SESSION_PEER_RATING_REQUIRED: "Peer rating is required",
+
     SLOTS_ALREADY_BOOKED: "The provided slot(s) have already been booked",
     SLOTS_DO_NOT_EXIST: "The provided slot(s) do not exist",
 
@@ -126,6 +129,11 @@ module.exports.SESSION_RECORDING_STATUS = {
     RECORDING_STARTED: 1,
     RECORDING_STOPPED: 2,
     RECORDING_FAILED: 3
+}
+
+module.exports.SESSION_REVIEW_TYPE = {
+    STUDENT_REVIEW: 0,
+    QARI_REVIEW: 1
 }
 
 module.exports.HEADERS = {

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { MODEL, COLLECTION, ERRORS, SESSION_RECORDING_STATUS } = require("../utils/constants");
+const { MODEL, COLLECTION, ERRORS, SESSION_RECORDING_STATUS, SESSION_REVIEW_TYPE } = require("../utils/constants");
 
 let session_schema = new mongoose.Schema({
     qari: {
@@ -43,7 +43,25 @@ let session_schema = new mongoose.Schema({
     held: {
         type: Boolean,
         default: false
-    }
+    },
+    reviews: [{
+        review_type: {
+            type: Number,
+            required: true,
+            enum: [...Object.values(SESSION_REVIEW_TYPE)]
+        },
+        notes: {
+            type: String
+        },
+        session_rating: {
+            type: Number,
+            required: [true, ERRORS.SESSION_REVIEW_RATING_REQURIED]
+        },
+        peer_rating: {
+            type: Number,
+            required: [true, ERRORS.SESSION_PEER_RATING_REQUIRED]
+        }
+    }]
 }, {
     timestamps: true
 });

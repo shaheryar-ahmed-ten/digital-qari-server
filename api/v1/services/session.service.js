@@ -1,11 +1,13 @@
 const { Session } = require("../../models");
-const { ERRORS, SESSION_RECORDING_STATUS } = require("../../utils/constants");
+const { ERRORS, SESSION_RECORDING_STATUS, USER_ROLES, SESSION_REVIEW_TYPE } = require("../../utils/constants");
 const axios = require("axios");
 
 const { TE } = require("../../utils/helpers");
 const ChimeMeetingService = require("../services/chime_meeting.service");
 
-const CrudService = require("../services/crud.service");
+const CrudService = require("./crud.service");
+const QariService = require("./qari.service");
+const StudentService = require("./student.service");
 
 class SessionService extends CrudService {
   constructor() {
@@ -103,6 +105,47 @@ class SessionService extends CrudService {
       return session;
     } catch (err) {
       TE(err);
+    }
+  }
+
+  async add_review(session_id, user_role, user_id, review) {
+    let transaction_session;
+    try {
+      transaction_session = await this.Model.startSession();
+      
+      transaction_session.startTransaction();
+
+      let session = await this.find_by_id(session_id);
+
+      if(!session) TE(ERRORS.INVALID_SESSION);
+      
+      let user;
+
+      if(user_role === USER_ROLES.STUDENT) {
+        review.review_type = SESSION_REVIEW_TYPE.STUDENT_REVIEW;
+        user = await StudentService.find_by_id(user_id);
+      } else if(user_role === USER_ROLES.QARI) {
+        review.review_type = SESSION_REVIEW_TYPE.QARI_REVIEW;
+        user = await QariService.find_by_id(user_id);
+      }
+
+      session.reviews.push(review);
+
+      await session.save({session: transaction_session});
+
+      user.rating = ((user.num_reviews/(user.num_reviews+1)) * user.rating) + (review.peer_rating/(user.num_reviews+1));
+      user.num_reviews += 1;
+
+      await user.save({session: transaction_session});
+
+      await transaction_session.commitTransaction();
+
+      return review;
+    } catch (err) {
+      await transaction_session.abortTransaction();
+      TE(err);
+    } finally {
+      transaction_session.endSession();
     }
   }
 }

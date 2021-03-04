@@ -53,6 +53,14 @@ let student_schema = new mongoose.Schema({
     free_trials: {
         type: Number,
         default: 3
+    },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    num_reviews: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true
