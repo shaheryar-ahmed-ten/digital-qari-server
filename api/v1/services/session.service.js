@@ -123,10 +123,10 @@ class SessionService extends CrudService {
 
       if(user_role === USER_ROLES.STUDENT) {
         review.review_type = SESSION_REVIEW_TYPE.STUDENT_REVIEW;
-        user = await StudentService.find_by_id(user_id);
+        user = await QariService.find_by_id(session.qari);
       } else if(user_role === USER_ROLES.QARI) {
         review.review_type = SESSION_REVIEW_TYPE.QARI_REVIEW;
-        user = await QariService.find_by_id(user_id);
+        user = await StudentService.find_by_id(session.student);
       }
 
       session.reviews.push(review);

@@ -46,10 +46,6 @@ router.post('/', async (req, res, next) => {
   try {
     let user = await UserService.create(req.body, true);
 
-    let {subject, html} = EMAIL.WELCOME_EMAIL();
-
-    await SESEmailSendService.send_email(req.body.email, subject, html);
-
     ReS(res, {
       user
     });

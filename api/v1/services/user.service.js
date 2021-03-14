@@ -1,7 +1,7 @@
 const { User, Admin, Institute, Qari, Student } = require("../../models");
 
 const { TE } = require("../../utils/helpers");
-const { ERRORS, USER_ROLES, SMS } = require("../../utils/constants");
+const { ERRORS, USER_ROLES, SMS, EMAIL } = require("../../utils/constants");
 
 const AdminService = require("./admin.service");
 const InstituteService = require("./institute.service");
@@ -9,6 +9,7 @@ const QariService = require("./qari.service");
 const StudentService = require("./student.service");
 const S3FileUploadService = require("./s3_file_upload.service");
 const SNSSMSSendService = require("./sns_sms_send.service");
+const SESEmailSendService = require("./ses_email_send.service");
 
 const OTPGenerator = require('otp-generator');
 const CrudService = require("./crud.service");
@@ -61,15 +62,21 @@ class UserService extends CrudService {
 
             if (user_obj.role == USER_ROLES.STUDENT) {
                 user.otp = OTPGenerator.generate(6, { upperCase: true, specialChars: false });
+
+                await SNSSMSSendService.send_sms(user_with_role.phone_number, SMS.OTP_SMS(user.otp));
             } else {
                 user.verified = true;
             }
-
+            
             if (user_obj.role) await user_with_role.validate();
-
+            
             await user.save({ session });
 
-            await SNSSMSSendService.send_sms(user_with_role.phone_number, SMS.OTP_SMS(user.otp));
+            console.log(user.otp);
+
+            let {subject, html} = EMAIL.WELCOME_EMAIL(user.otp);
+
+            await SESEmailSendService.send_email(user.email, subject, html);
 
             user_with_role.user = user._id;
 

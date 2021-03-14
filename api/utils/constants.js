@@ -147,10 +147,10 @@ module.exports.EMAIL = {
             html: require("./email_templates/change_password.email").default(token)
         }
     },
-    WELCOME_EMAIL: () => {
+    WELCOME_EMAIL: (otp) => {
         return {
             subject: "Digital Qari - Welcome",
-            html: require("./email_templates/welcome.email").default()
+            html: require("./email_templates/welcome.email").default(otp)
         }
     }
 }
