@@ -15,7 +15,8 @@ let booking_schema = new mongoose.Schema({
     required: true
   },
   student_amount: {
-
+    type: Number,
+    required: true
   },
   payment_plan: {
     type: mongoose.Types.ObjectId,
