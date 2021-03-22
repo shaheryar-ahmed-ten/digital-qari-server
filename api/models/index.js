@@ -7,6 +7,7 @@ const { Booking } = require("./booking.model");
 const { Session } = require("./session.model");
 const { PaymentPlan } = require("./payment_plan.model");
 const { Referral } = require("./referral.model");
+const { PaymentTransaction } = require("./payment_transaction.model");
 
 module.exports = {
     User,
@@ -17,5 +18,6 @@ module.exports = {
     Booking,
     Session,
     PaymentPlan,
-    Referral
+    Referral,
+    PaymentTransaction
 };

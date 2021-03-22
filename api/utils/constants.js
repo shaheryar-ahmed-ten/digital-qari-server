@@ -69,7 +69,8 @@ module.exports.MODEL = {
     BOOKING: "booking",
     SESSION: "session",
     PAYMENT_PLAN: "payment_plan",
-    REFERRAL: "referral"
+    REFERRAL: "referral",
+    PAYMENT_TRANSACTION: "payment_transaction"
 };
 
 module.exports.COLLECTION = {
@@ -82,7 +83,8 @@ module.exports.COLLECTION = {
     BOOKINGS: "bookings",
     SESSIONS: "sessions",
     PAYMENT_PLANS: "payment_plans",
-    REFERRALS: "referrals"
+    REFERRALS: "referrals",
+    PAYMENT_TRANSACTIONS: "payment_transactions"
 };
 
 module.exports.REGEX = {
@@ -129,6 +131,12 @@ module.exports.SESSION_RECORDING_STATUS = {
     RECORDING_STARTED: 1,
     RECORDING_STOPPED: 2,
     RECORDING_FAILED: 3
+}
+
+module.exports.PAYMENT_TRANSACTION_STATUS = {
+    PENDING: 0,
+    PAID: 1,
+    ACCRUED: 2
 }
 
 module.exports.SESSION_REVIEW_TYPE = {

@@ -1,13 +1,16 @@
 const { Booking } = require("../../models");
-const { PAYMENT_PLANS, ERRORS, SLOT_STATUS, DAYS_OF_WEEK } = require("../../utils/constants");
+const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK } = require("../../utils/constants");
 const { TE } = require("../../utils/helpers");
 const db = require("../../utils/db");
+
+const mongoose = require('mongoose');
 
 const CrudService = require("./crud.service");
 const StudentService = require("./student.service");
 const SessionService = require("./session.service");
 const QariService = require("./qari.service");
 const PaymentPlanService = require("./payment_plan.service");
+const PaymentTransactionService = require("./payment_transaction.service");
 
 class BookingService extends CrudService {
     constructor() {
@@ -17,16 +20,26 @@ class BookingService extends CrudService {
     async create_booking(obj) {
       let transactionSession;
 
-      async function update_student(student_id, payment_plan, payment_due_date) {
+      async function update_student_payment_plan(student_id, payment_plan) {
         try {
           let student = await StudentService.find_by_id(student_id);
 
-          if(!PaymentPlanService.exists(payment_plan)) TE(ERRORS.INVALID_PAYMENT_PLAN);
+          payment_plan = await PaymentPlanService.find_by_id(payment_plan);
+          
+          if(!payment_plan) TE(ERRORS.INVALID_PAYMENT_PLAN);
   
+          let months = payment_plan.frequency;
+    
+          let payment_due_date = new Date();
+          payment_due_date.setMonth(payment_due_date.getMonth()+months);
+          payment_due_date.setHours(23, 59, 59);
+
           student.payment_plan = payment_plan;
           student.payment_due_date = payment_due_date;
           
           await student.save({session: transactionSession})
+
+          return payment_due_date;
         } catch(err) {
           TE(err);
         }
@@ -50,6 +63,7 @@ class BookingService extends CrudService {
       async function update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date) {
         try {
           let qari_calendar = {};
+          console.log(qari_slots);
           for(let day in qari_slots) {
             for(let slot in qari_slots[day]) {
               let date = new Date();
@@ -82,16 +96,9 @@ class BookingService extends CrudService {
 
         await transactionSession.startTransaction();
 
-        payment_plan = await PaymentPlanService.find_by_id(payment_plan);
-        let months = payment_plan.frequency;
-  
-        let payment_due_date = new Date();
-        payment_due_date.setMonth(payment_due_date.getMonth()+months);
-        payment_due_date.setHours(23, 59, 59);
+        let new_payment_due_date = await update_student_payment_plan(student_id, payment_plan);
 
-        await update_student(student_id, payment_plan, payment_due_date);
-
-        await update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date);
+        await update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, new_payment_due_date);
         
         let booking = new Booking({
           qari: qari_id,
@@ -110,7 +117,12 @@ class BookingService extends CrudService {
           booking.qari_amount = qari.fee;
         }
 
+        
         await booking.save({session: transactionSession});
+
+        await PaymentTransactionService.create({
+          booking: booking._id
+        }, {session: transactionSession});
 
         await transactionSession.commitTransaction();
         return {booking};
