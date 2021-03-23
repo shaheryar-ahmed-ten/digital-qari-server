@@ -39,6 +39,7 @@ let booking_schema = new mongoose.Schema({
 function find_handler(next) {
   this.populate('qari');
   this.populate('student');
+  this.populate('payment_plan');
   next();
 }
 
