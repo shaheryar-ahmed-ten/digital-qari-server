@@ -4,7 +4,6 @@ var router = express.Router();
 const { ReS, ReE, authenticate, convert_to_object_id, TE } = require("../../utils/helpers");
 const { ERRORS, USER_ROLES } = require("../../utils/constants");
 
-const BookingService = require("../services/booking.service");
 const StudentService = require("../services/student.service");
 
 router.get('/all', async (req, res) => {
@@ -62,14 +61,14 @@ router.get('/:student_id', async (req, res) => {
   }
 });
 
-router.get('/:student_id/bookings', authenticate, async (req, res) => {
+router.get('/:student_id/payment_details', authenticate, async (req, res) => {
   try {
     if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != req.params.student_id) TE(ERRORS.UNAUTHORIZED_USER);
 
-    let {documents: bookings} = await BookingService.find({student: req.params.student_id});
-
+    let payment_details = await StudentService.get_payment_details(req.params.student_id);
+    
     ReS(res, {
-      bookings
+      payment_details
     })
   } catch (err) {
     ReE(res, err);

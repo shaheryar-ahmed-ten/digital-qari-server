@@ -4,6 +4,9 @@ const { TE } = require("../../utils/helpers");
 const UserRoleService = require("./user_role.service");
 
 const OTPGenerator = require('otp-generator');
+const BookingService = require("./booking.service");
+const PaymentTransactionService = require("./payment_transaction.service");
+const { PAYMENT_TYPE } = require("../../utils/constants");
 
 class StudentService extends UserRoleService {
     constructor() {
@@ -22,6 +25,26 @@ class StudentService extends UserRoleService {
 
             return super.create(obj, options);
         } catch(err) {
+            TE(err);
+        }
+    }
+
+    async get_payment_details(student_id) {
+        try {
+            let {documents: bookings} = await BookingService.find({
+                student: student_id
+            });
+
+            let {documents: payment_transactions} = await PaymentTransactionService.find({
+                booking: bookings.map(booking => booking._id),
+                type: PAYMENT_TYPE.STUDENT_PAYMENT
+            });
+
+            return {
+                bookings,
+                payment_transactions
+            };
+        } catch (err) {
             TE(err);
         }
     }
