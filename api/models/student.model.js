@@ -29,12 +29,6 @@ let student_schema = new mongoose.Schema({
     parents_name: {
         type: String,
     },
-    payment_plan: {
-        type: mongoose.Types.ObjectId
-    },
-    payment_due_date: {
-        type: Date
-    },
     referral_code: {
         type: String,
         unique: true
@@ -65,6 +59,16 @@ let student_schema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+
+function find_handler(next) {
+    this.populate('payment_plan');
+    next();
+}
+
+student_schema.pre('find', find_handler);
+student_schema.pre('findOne', find_handler);
+student_schema.pre('findById', find_handler);
 
 student_schema.post('save', function (error, doc, next) {
     if (error.name === 'MongoError' && error.code === 11000) {

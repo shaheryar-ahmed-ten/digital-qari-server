@@ -49,6 +49,13 @@ module.exports.ERRORS = {
     SESSION_REVIEW_RATING_REQURIED: "Session rating is required",
     SESSION_PEER_RATING_REQUIRED: "Peer rating is required",
 
+    QARI_AMOUNT_REQUIRED: "Qari amount is required",
+    STUDENT_AMOUNT_REQUIRED: "Student amount is required",
+
+    BOOKING_REQUIRED: "Booking is required",
+    TRANSACTION_AMOUNT_REQUIRED: "Transaction amount is required",
+    PAYMENT_TYPE_REQUIRED: "Payment type is required",
+
     SLOTS_ALREADY_BOOKED: "The provided slot(s) have already been booked",
     SLOTS_DO_NOT_EXIST: "The provided slot(s) do not exist",
 
@@ -136,10 +143,15 @@ module.exports.SESSION_RECORDING_STATUS = {
     RECORDING_FAILED: 3
 }
 
-module.exports.PAYMENT_TRANSACTION_STATUS = {
+module.exports.PAYMENT_STATUS = {
     PENDING: 0,
     PAID: 1,
     ACCRUED: 2
+}
+
+module.exports.PAYMENT_TYPE = {
+    STUDENT_PAYMENT: 0,
+    QARI_PAYMENT: 1
 }
 
 module.exports.SESSION_REVIEW_TYPE = {

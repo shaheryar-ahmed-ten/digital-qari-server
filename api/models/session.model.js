@@ -87,6 +87,8 @@ function find_handler(next) {
 }
 
 session_schema.pre('find', find_handler);
+session_schema.pre('findOne', find_handler);
+session_schema.pre('findById', find_handler);
 
 session_schema.post('save', function (error, doc, next) {
     if (error.name === 'MongoError' && error.code === 11000) {

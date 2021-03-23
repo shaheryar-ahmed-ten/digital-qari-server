@@ -1,31 +1,39 @@
 const mongoose = require('mongoose');
-const { MODEL, COLLECTION } = require("../utils/constants");
+const { MODEL, PAYMENT_STATUS, COLLECTION, ERRORS } = require("../utils/constants");
 
 let booking_schema = new mongoose.Schema({
   qari: {
     type: mongoose.Types.ObjectId,
-    ref: MODEL.QARI
+    ref: MODEL.QARI,
+    required: [true, ERRORS.QARI_REQUIRED]
   },
   student: {
     type: mongoose.Types.ObjectId,
-    ref: MODEL.STUDENT
+    ref: MODEL.STUDENT,
+    required: [true, ERRORS.STUDENT_REQUIRED]
   },
   qari_amount: {
     type: Number,
-    required: true
+    required: [true, ERRORS.QARI_AMOUNT_REQUIRED]
   },
   student_amount: {
     type: Number,
-    required: true
+    required: [true, ERRORS.STUDENT_AMOUNT_REQUIRED]
   },
   payment_plan: {
     type: mongoose.Types.ObjectId,
-    ref: MODEL.PAYMENT_PLAN
+    ref: MODEL.PAYMENT_PLAN,
+    required: [true, ERRORS.PAYMENT_PLAN_REQUIRED]
   },
-  isActive: {
-    type: Boolean,
-    default: true
-  }
+  payment_due_date: {
+      type: Date,
+      required: [true, ERRORS.PAYMENT_DUE_DATE_REQUIRED]
+  },
+  payment_status: {
+    type: String,
+    enum: [...Object.values(PAYMENT_STATUS)],
+    default: PAYMENT_STATUS.PENDING
+  },
 });
 
 function find_handler(next) {

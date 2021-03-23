@@ -1,5 +1,5 @@
 const { Booking } = require("../../models");
-const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK } = require("../../utils/constants");
+const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK, PAYMENT_TYPE } = require("../../utils/constants");
 const { TE } = require("../../utils/helpers");
 
 const CrudService = require("./crud.service");
@@ -19,24 +19,7 @@ class BookingService extends CrudService {
 
       async function update_student_payment_plan(student_id, payment_plan) {
         try {
-          let student = await StudentService.find_by_id(student_id);
-
-          payment_plan = await PaymentPlanService.find_by_id(payment_plan);
           
-          if(!payment_plan) TE(ERRORS.INVALID_PAYMENT_PLAN);
-  
-          let months = payment_plan.frequency;
-    
-          let payment_due_date = new Date();
-          payment_due_date.setMonth(payment_due_date.getMonth()+months);
-          payment_due_date.setHours(23, 59, 59);
-
-          student.payment_plan = payment_plan;
-          student.payment_due_date = payment_due_date;
-          
-          await student.save({session: transactionSession})
-
-          return payment_due_date;
         } catch(err) {
           TE(err);
         }
@@ -91,6 +74,26 @@ class BookingService extends CrudService {
         }
       }
 
+      async function create_payment_transactions(booking_id, amounts) {
+        try {
+          
+          await PaymentTransactionService.create({
+            booking: booking_id,
+            amount: amounts.qari,
+            type: PAYMENT_TYPE.QARI_PAYMENT
+          }, {session: transactionSession});
+          
+          await PaymentTransactionService.create({
+            booking: booking_id,
+            amount: amounts.student,
+            type: PAYMENT_TYPE.STUDENT_PAYMENT
+          }, {session: transactionSession});
+
+        } catch(err) {
+          TE(err);
+        }
+      }
+
       try {
         let {qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin} = obj;
 
@@ -98,33 +101,51 @@ class BookingService extends CrudService {
 
         await transactionSession.startTransaction();
 
-        let new_payment_due_date = await update_student_payment_plan(student_id, payment_plan);
+        payment_plan = await PaymentPlanService.find_by_id(payment_plan);
+        
+        if(!payment_plan) TE(ERRORS.INVALID_PAYMENT_PLAN);
 
-        await update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, new_payment_due_date);
+        let months = payment_plan.frequency;
+  
+        let payment_due_date = new Date();
+        payment_due_date.setMonth(payment_due_date.getMonth()+months);
+        payment_due_date.setHours(23, 59, 59);
+
+        await update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date);
         
         let booking = new Booking({
           qari: qari_id,
           student: student_id,
           qari_amount,
           student_amount,
-          payment_plan
+          payment_plan,
+          payment_due_date
         });
+
+        let amounts = {};
 
         if(is_admin) {
           booking.student_amount = student_amount;
           booking.qari_amount = qari_amount;
+
+          amounts = {
+            qari: qari_amount,
+            student: student_amount
+          };
         } else {
           let qari = await QariService.find_by_id(qari_id);
           booking.student_amount = qari.fee;
           booking.qari_amount = qari.fee;
+
+          amounts = {
+            qari: qari.fee,
+            student: qari.fee
+          };
         }
 
-        
         await booking.save({session: transactionSession});
 
-        await PaymentTransactionService.create({
-          booking: booking._id
-        }, {session: transactionSession});
+        await create_payment_transactions(booking._id, amounts);
 
         await transactionSession.commitTransaction();
         return {booking};

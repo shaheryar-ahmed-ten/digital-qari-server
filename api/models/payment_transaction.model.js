@@ -1,16 +1,20 @@
 const mongoose = require('mongoose');
-const { MODEL, COLLECTION, PAYMENT_TRANSACTION_STATUS } = require("../utils/constants");
+const { MODEL, COLLECTION, ERRORS, PAYMENT_TYPE } = require("../utils/constants");
 
 let payment_transaction_schema = new mongoose.Schema({
   booking: {
     type: mongoose.Types.ObjectId,
     ref: MODEL.BOOKING,
-    required: true
+    required: [true, ERRORS.BOOKING_REQUIRED]
   },
-  status: {
+  amount: {
+    type: Number,
+    required: [true, ERRORS.TRANSACTION_AMOUNT_REQUIRED]
+  },
+  type: {
     type: String,
-    enum: [...Object.values(PAYMENT_TRANSACTION_STATUS)],
-    default: PAYMENT_TRANSACTION_STATUS.PENDING
+    enum: [...Object.values(PAYMENT_TYPE)],
+    required: [true, ERRORS.PAYMENT_TYPE_REQUIRED]
   }
 });
 
