@@ -30,7 +30,7 @@ let booking_schema = new mongoose.Schema({
       required: [true, ERRORS.PAYMENT_DUE_DATE_REQUIRED]
   },
   payment_status: {
-    type: String,
+    type: Number,
     enum: [...Object.values(PAYMENT_STATUS)],
     default: PAYMENT_STATUS.PENDING
   },
