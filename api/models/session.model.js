@@ -7,6 +7,19 @@ let session_schema = new mongoose.Schema({
         ref: MODEL.QARI,
         required: [true, ERRORS.QARI_REQUIRED]
     },
+    qari_slot: {
+        type: {
+            day: {
+                type: String,
+                required: [true, ERRORS.QARI_SLOT_DAY_REQUIRED]
+            },
+            slot: {
+                type: Number,
+                required: [true, ERRORS.QARI_SLOT_NUM_REQUIRED]
+            }
+        },
+        required: [true, ERRORS.QARI_SLOT_REQUIRED]
+    },
     student: {
         type: mongoose.Types.ObjectId,
         ref: MODEL.STUDENT,

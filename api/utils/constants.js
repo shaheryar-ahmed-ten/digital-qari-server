@@ -40,6 +40,9 @@ module.exports.ERRORS = {
     PAYMENT_DUE_DATE_REQUIRED: "Payment due date is required",
     
     QARI_REQUIRED: "Qari is required",
+    QARI_SLOT_REQUIRED: "Qari slot is required",
+    QARI_SLOT_DAY_REQUIRED: "Qari slot day is required",
+    QARI_SLOT_NUM_REQUIRED: "Qari slot number is required",
     STUDENT_REQUIRED: "Student is required",
     SESSION_START_TIME_REQUIRED: "Session start time is required",
     SESSION_END_TIME_REQUIRED: "Session end time is required",

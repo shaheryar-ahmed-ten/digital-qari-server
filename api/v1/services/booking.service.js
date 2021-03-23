@@ -1,9 +1,6 @@
 const { Booking } = require("../../models");
 const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK } = require("../../utils/constants");
 const { TE } = require("../../utils/helpers");
-const db = require("../../utils/db");
-
-const mongoose = require('mongoose');
 
 const CrudService = require("./crud.service");
 const StudentService = require("./student.service");
@@ -45,22 +42,27 @@ class BookingService extends CrudService {
         }
       }
 
-      async function create_session(qari_id, student_id, date, slot) {
-        try {
-          date.setDate(date.getDate()+7);
-          date.setHours(0, (slot-1)*30, 0, 0);
-          
-          await SessionService.create({
-            qari: qari_id,
-            student: student_id,
-            start_time: date
-          }, {session: transactionSession});
-        } catch(err) {
-          TE(err);
-        }
-      }
-
       async function update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date) {
+
+        async function create_session(qari_id, student_id, date, day, slot) {
+          try {
+            date.setDate(date.getDate()+7);
+            date.setHours(0, (slot-1)*30, 0, 0);
+            
+            await SessionService.create({
+              qari: qari_id,
+              qari_slot: {
+                day,
+                slot
+              },
+              student: student_id,
+              start_time: date
+            }, {session: transactionSession});
+          } catch(err) {
+            TE(err);
+          }
+        }
+
         try {
           let qari_calendar = {};
           console.log(qari_slots);
@@ -74,7 +76,7 @@ class BookingService extends CrudService {
               tmp.setDate(tmp.getDate()+7);
   
               while(tmp < payment_due_date) {
-                await create_session(qari_id, student_id, date, slot);
+                await create_session(qari_id, student_id, date, day, slot);
                 tmp.setDate(tmp.getDate()+7);
               }
 
@@ -146,7 +148,7 @@ class BookingService extends CrudService {
 
         date.setHours(0, (slot - 1)*30, 0, 0);
 
-        transactionSession = await db.startSession();
+        transactionSession = await this.Model.startSession();
         
         await transactionSession.startTransaction();
 
@@ -178,6 +180,10 @@ class BookingService extends CrudService {
 
           let session = await SessionService.create({
             qari: qari_id,
+            qari_slot: {
+              day,
+              slot
+            },
             student: student_id,
             start_time: date,
             free_trial: true

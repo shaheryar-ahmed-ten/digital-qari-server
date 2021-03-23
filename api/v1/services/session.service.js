@@ -1,5 +1,5 @@
 const { Session } = require("../../models");
-const { ERRORS, SESSION_RECORDING_STATUS, USER_ROLES, SESSION_REVIEW_TYPE } = require("../../utils/constants");
+const { ERRORS, SESSION_RECORDING_STATUS, USER_ROLES, SESSION_REVIEW_TYPE, SLOT_STATUS } = require("../../utils/constants");
 const axios = require("axios");
 
 const { TE } = require("../../utils/helpers");
@@ -39,7 +39,7 @@ class SessionService extends CrudService {
             }
           });
           let task_id = response.data;
-          task_id = task_id.split("/");
+          task_id = `${task_id}`.split("/");
           task_id = task_id[task_id.length-1];
           
           session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STARTED;
@@ -79,7 +79,12 @@ class SessionService extends CrudService {
   }
 
   async leave(session_id) {
+    let transaction_session;
     try {
+      transaction_session = await Session.startSession();
+
+      await transaction_session.startTransaction();
+
       let session = await this.find_by_id(session_id);
       
       if(session.recording_status !== SESSION_RECORDING_STATUS.RECORDING_STOPPED) {
@@ -94,17 +99,23 @@ class SessionService extends CrudService {
         let filename = task.createdAt + '.mp4';
         session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STOPPED;
         session.recording_link = filename;
-        await session.save();
       }
 
       await ChimeMeetingService.end_meeting(session.meeting_id);
       session.held = true;
 
-      await session.save();
+      await QariService.assign_slot(session.qari._id, session.qari_slot.day, session.qari_slot.slot, SLOT_STATUS.AVAILABLE, {session: transaction_session});
+
+      await session.save({session: transaction_session});
+
+      await transaction_session.commitTransaction();
 
       return session;
     } catch (err) {
+      await transaction_session.abortTransaction();
       TE(err);
+    } finally {
+      await transaction_session.endSession();
     }
   }
 
