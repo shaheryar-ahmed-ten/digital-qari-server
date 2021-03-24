@@ -1,10 +1,9 @@
-const { Student } = require("../../models");
+const { Student, Booking } = require("../../models");
 const { TE } = require("../../utils/helpers");
 
 const UserRoleService = require("./user_role.service");
 
 const OTPGenerator = require('otp-generator');
-const BookingService = require("./booking.service");
 const PaymentTransactionService = require("./payment_transaction.service");
 const { PAYMENT_TYPE } = require("../../utils/constants");
 
@@ -31,7 +30,7 @@ class StudentService extends UserRoleService {
 
     async get_payment_details(student_id) {
         try {
-            let {documents: bookings} = await BookingService.find({
+            let {documents: bookings} = await Booking.find({
                 student: student_id
             });
 
