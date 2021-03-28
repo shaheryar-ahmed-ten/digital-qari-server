@@ -30,9 +30,11 @@ class StudentService extends UserRoleService {
 
     async get_payment_details(student_id) {
         try {
-            let {documents: bookings} = await Booking.find({
+            let bookings = await Booking.find({
                 student: student_id
             });
+
+            console.log(bookings);
 
             let {documents: payment_transactions} = await PaymentTransactionService.find({
                 booking: bookings.map(booking => booking._id),
