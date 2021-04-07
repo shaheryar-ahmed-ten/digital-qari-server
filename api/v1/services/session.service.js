@@ -18,7 +18,7 @@ class SessionService extends CrudService {
     try {
       let session = await this.find_by_id(session_id);
       if(!session) TE(ERRORS.INVALID_SESSION);
-      if(session.qari != user_id && session.student != user_id) TE(ERRORS.NOT_ALLOWED_IN_SESSION);
+      if(session.qari._id != user_id && session.student._id != user_id) TE(ERRORS.NOT_ALLOWED_IN_SESSION);
 
       else {
         let meeting = await ChimeMeetingService.create_meeting(session_id);
