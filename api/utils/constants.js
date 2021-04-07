@@ -59,6 +59,8 @@ module.exports.ERRORS = {
     SLOTS_ALREADY_BOOKED: "The provided slot(s) have already been booked",
     SLOTS_DO_NOT_EXIST: "The provided slot(s) do not exist",
 
+    QARI_ALREADY_BOOKED_ONCE: "A free trial session with this qari was already booked",
+
     FREE_TRIALS_FINISHED: "No more free trials available",
     FREE_TRIALS_DEADLINE_ENDED: "Your free trial availability deadline has ended",
     

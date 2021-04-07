@@ -17,14 +17,6 @@ class BookingService extends CrudService {
     async create_booking(obj) {
       let transactionSession;
 
-      async function update_student_payment_plan(student_id, payment_plan) {
-        try {
-          
-        } catch(err) {
-          TE(err);
-        }
-      }
-
       async function update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date) {
 
         async function create_session(qari_id, student_id, date, day, slot) {
@@ -160,8 +152,20 @@ class BookingService extends CrudService {
     async create_free_trial_session(obj) {
       let transactionSession;
       try {
+        transactionSession = await this.Model.startSession();
+        
         let {qari_id, student_id, qari_slot} = obj;
         
+        let {documents: sessions} = await SessionService.find({
+          qari: qari_id,
+          student: student_id,
+          free_trial: true
+        });
+
+        console.log(sessions);
+
+        if(sessions.length > 0) TE(ERRORS.QARI_ALREADY_BOOKED_ONCE);
+
         let {day, slot, date} = qari_slot;
 
          date = new Date(date);
@@ -169,7 +173,6 @@ class BookingService extends CrudService {
 
         date.setHours(0, (slot - 1)*30, 0, 0);
 
-        transactionSession = await this.Model.startSession();
         
         await transactionSession.startTransaction();
 
