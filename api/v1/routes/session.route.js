@@ -70,8 +70,6 @@ router.post('/:session_id/join_recording_bot', async (req, res) => {
 
 router.post('/:session_id/add_review', authenticate, async (req, res) => {
   try {
-
-    console.log(req.params);
     let session = await SessionService.add_review(req.params.session_id, req.auth.role, req.auth.role_id, req.body);
 
     ReS(res, {
