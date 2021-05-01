@@ -95,9 +95,13 @@ class QariService extends UserRoleService {
         }
     }
 
-    async get_all_calendars() {
+    async get_all_calendars(tz_offset) {
         try {
             let documents = await this.Model.find().select("calendar").lean();
+            for(let doc in documents) {
+                doc = documents[doc];
+                doc["calendar"] = this.add_tz_offset_to_calendar(doc["calendar"], tz_offset);
+            }
             let total_count = await this.Model.countDocuments();
 
             return { documents, total_count };
@@ -167,9 +171,14 @@ class QariService extends UserRoleService {
         }
     }
 
-    async condensed_find(filters = {}, fields = "_id name calendar fee") {
+    async condensed_find(filters = {}, tz_offset=0, fields = "_id name calendar fee") {
         try {
             let documents = await this.Model.find(filters).select(fields).lean();
+            for(let doc in documents) {
+                doc = documents[doc];
+                console.log(doc);
+                doc["calendar"] = this.add_tz_offset_to_calendar(doc["calendar"], tz_offset);
+            }
             documents = documents.map(doc => {
                 doc["institute"] = doc["institute"]["_id"];
                 delete doc["user"];

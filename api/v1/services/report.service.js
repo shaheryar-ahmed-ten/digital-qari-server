@@ -4,9 +4,9 @@ const { SLOT_STATUS } = require("../../utils/constants");
 const QariService = require("../services/qari.service");
 
 class ReportService {
-  async get_qari_calendar_report(qari_id) {
+  async get_qari_calendar_report(qari_id, tz_offset) {
     try {
-      let qari = await QariService.find_by_id(qari_id);
+      let qari = await QariService.find_by_id(qari_id, tz_offset);
       if (!qari) return {};
       let qariCalendar = map_to_object(qari.calendar.toObject());
       return this.merge_qari_calendars([qariCalendar]);
@@ -28,9 +28,9 @@ class ReportService {
     }
   }
 
-  async get_full_calendar_report() {
+  async get_full_calendar_report(tz_offset) {
     try {
-      let { documents: qaris } = await QariService.get_all_calendars();
+      let { documents: qaris } = await QariService.get_all_calendars(tz_offset);
       let report = {};
       let calendars = qaris.map(qari => qari.calendar);
       report = this.merge_qari_calendars(calendars);

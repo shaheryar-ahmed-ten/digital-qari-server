@@ -13,7 +13,7 @@ router.get('/all', async (req, res) => {
     if (institute) {
       filters['institute'] = convert_to_object_id(institute);
     }
-    let { documents: qaris } = await QariService.condensed_find({ ...filters });
+    let { documents: qaris } = await QariService.condensed_find({ ...filters }, req.query.tz_offset);
     ReS(res, {
       qaris
     });
