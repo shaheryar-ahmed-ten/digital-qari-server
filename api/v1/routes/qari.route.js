@@ -48,7 +48,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:qari_id', async (req, res) => {
   try {
-    let qari = await QariService.find_by_id(req.params.qari_id);
+    let qari = await QariService.find_by_id(req.params.qari_id, req.query.tz_offset);
     ReS(res, {
       qari
     });

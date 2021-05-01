@@ -17,7 +17,7 @@ class BookingService extends CrudService {
     async create_booking(obj) {
       let transactionSession;
 
-      async function update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date) {
+      async function update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date, tz_offset) {
 
         async function create_session(qari_id, student_id, date, day, slot) {
           try {
@@ -60,7 +60,7 @@ class BookingService extends CrudService {
             }
           }
 
-          await QariService.assign_slots(qari_id, qari_calendar, {session: transactionSession});
+          await QariService.assign_slots(qari_id, qari_calendar, tz_offset, {session: transactionSession});
         } catch(err) {
           TE(err);
         }
@@ -87,7 +87,7 @@ class BookingService extends CrudService {
       }
 
       try {
-        let {qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin} = obj;
+        let {qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset} = obj;
 
         transactionSession = await this.Model.startSession();
 
@@ -103,7 +103,7 @@ class BookingService extends CrudService {
         payment_due_date.setMonth(payment_due_date.getMonth()+months);
         payment_due_date.setHours(23, 59, 59);
 
-        await update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date);
+        await update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date, tz_offset);
         
         let booking = new Booking({
           qari: qari_id,
@@ -154,7 +154,7 @@ class BookingService extends CrudService {
       try {
         transactionSession = await this.Model.startSession();
         
-        let {qari_id, student_id, qari_slot} = obj;
+        let {qari_id, student_id, qari_slot, tz_offset} = obj;
         
         let {documents: sessions} = await SessionService.find({
           qari: qari_id,
@@ -162,17 +162,13 @@ class BookingService extends CrudService {
           free_trial: true
         });
 
-        console.log(sessions);
-
         if(sessions.length > 0) TE(ERRORS.QARI_ALREADY_BOOKED_ONCE);
 
         let {day, slot, date} = qari_slot;
 
          date = new Date(date);
-        // date.setDate(date.getDate() + (DAYS_OF_WEEK[day] + 7 - date.getDay()) % 7);
 
         date.setHours(0, (slot - 1)*30, 0, 0);
-
         
         await transactionSession.startTransaction();
 
@@ -199,7 +195,7 @@ class BookingService extends CrudService {
           slots[day] = {};
           slots[day][slot] = SLOT_STATUS.UNAVAILABLE;
 
-          await QariService.assign_slots(qari_id, slots, {session: transactionSession});
+          await QariService.assign_slots(qari_id, slots, tz_offset, {session: transactionSession});
           await student.save({session: transactionSession});
 
           let session = await SessionService.create({
