@@ -12,7 +12,7 @@ class QariService extends UserRoleService {
 
     async create(obj, options) {
         try {
-            if(obj["recitation"]) obj.recitation = await S3FileUploadService.upload_file(`${obj.user}-recitation`, obj.recitation);
+            if (obj["recitation"]) obj.recitation = await S3FileUploadService.upload_file(`${obj.user}-recitation`, obj.recitation);
             return super.create(obj, options);
         } catch (err) {
             TE(err);
@@ -21,11 +21,11 @@ class QariService extends UserRoleService {
 
     async update(id, fields) {
         try {
-          let qari = await this.Model.findById(id);
-          if(fields.recitation) {
-              fields.recitation = await S3FileUploadService.upload_file(`${qari.user._id}-recitation`, fields.recitation);
-          }
-          return super.update(id, fields);
+            let qari = await this.Model.findById(id);
+            if (fields.recitation) {
+                fields.recitation = await S3FileUploadService.upload_file(`${qari.user._id}-recitation`, fields.recitation);
+            }
+            return super.update(id, fields);
         } catch (err) {
             TE(err);
         }
@@ -57,18 +57,18 @@ class QariService extends UserRoleService {
 
     add_tz_offset_to_calendar(calendar, tz_offset) {
         let offseted_calendar = {}
-        for(let day in calendar) {
-            for(let slot in calendar[day]) {
-                let new_slot = ~~slot - (tz_offset/30);
-                if(new_slot < 1) {
-                    new_slot = 48+new_slot;
-                    if(!offseted_calendar[this.get_prev_day(day)]) {
+        for (let day in calendar) {
+            for (let slot in calendar[day]) {
+                let new_slot = ~~slot - (tz_offset / 30);
+                if (new_slot < 1) {
+                    new_slot = 48 + new_slot;
+                    if (!offseted_calendar[this.get_prev_day(day)]) {
                         offseted_calendar[this.get_prev_day(day)] = {}
                     }
                     offseted_calendar[this.get_prev_day(day)][new_slot] = calendar[day][slot];
-                } else if(new_slot > 48) {
-                    new_slot = new_slot-48;
-                    if(!offseted_calendar[this.get_next_day(day)]) {
+                } else if (new_slot > 48) {
+                    new_slot = new_slot - 48;
+                    if (!offseted_calendar[this.get_next_day(day)]) {
                         offseted_calendar[this.get_next_day(day)] = {};
                     }
                     offseted_calendar[this.get_next_day(day)][new_slot] = calendar[day][slot];
@@ -81,12 +81,12 @@ class QariService extends UserRoleService {
             }
         }
         return offseted_calendar;
-    }    
+    }
 
-    async find_by_id(qari_id, tz_offset=0) {
+    async find_by_id(qari_id, tz_offset = 0) {
         try {
             let document = await this.Model.findById(qari_id);
-            
+            if (!document) return TE(ERRORS.USER_NOT_FOUND);
             document["calendar"] = this.add_tz_offset_to_calendar(document.calendar.toJSON(), tz_offset);
 
             return document;
@@ -98,7 +98,7 @@ class QariService extends UserRoleService {
     async get_all_calendars(tz_offset) {
         try {
             let documents = await this.Model.find().select("calendar").lean();
-            for(let doc in documents) {
+            for (let doc in documents) {
                 doc = documents[doc];
                 doc["calendar"] = this.add_tz_offset_to_calendar(doc["calendar"], tz_offset);
             }
@@ -123,7 +123,7 @@ class QariService extends UserRoleService {
                 delete slot_inserted_obj[slot_num];
             } else {
                 status = ~~status;
-                if(Object.values(SLOT_STATUS).some(slot_status => slot_status === status)) {
+                if (Object.values(SLOT_STATUS).some(slot_status => slot_status === status)) {
                     slot_inserted_obj[slot_num] = ~~status;
                 } else {
                     TE(ERRORS.INVALID_SLOT_STATUS);
@@ -142,19 +142,19 @@ class QariService extends UserRoleService {
     async assign_slots(qari_id, slots, tz_offset, options) {
         try {
             slots = this.add_tz_offset_to_calendar(slots, -tz_offset);
-            
+
             let qari = await this.find_by_id(qari_id);
             let calendar = qari["calendar"].toJSON();
 
-            for(let slot_day in slots){
+            for (let slot_day in slots) {
 
                 if (!calendar[slot_day]) calendar[slot_day] = {};
-    
+
                 let slot_inserted_obj = calendar[slot_day];
-                for(let slot_num in slots[slot_day]){
-                    if(calendar[slot_day][slot_num] === SLOT_STATUS.UNAVAILABLE) {
-                        TE(ERRORS.SLOTS_ALREADY_BOOKED);  
-                    } else if(calendar[slot_day][slot_num] === undefined || calendar[slot_day][slot_num] === SLOT_STATUS.UNASSIGNED) {
+                for (let slot_num in slots[slot_day]) {
+                    if (calendar[slot_day][slot_num] === SLOT_STATUS.UNAVAILABLE) {
+                        TE(ERRORS.SLOTS_ALREADY_BOOKED);
+                    } else if (calendar[slot_day][slot_num] === undefined || calendar[slot_day][slot_num] === SLOT_STATUS.UNASSIGNED) {
                         TE(ERRORS.SLOTS_DO_NOT_EXIST);
                     } else {
                         slot_inserted_obj[slot_num] = SLOT_STATUS.UNAVAILABLE;
@@ -171,10 +171,10 @@ class QariService extends UserRoleService {
         }
     }
 
-    async condensed_find(filters = {}, tz_offset=0, fields = "_id name calendar fee") {
+    async condensed_find(filters = {}, tz_offset = 0, fields = "_id name calendar fee") {
         try {
             let documents = await this.Model.find(filters).select(fields).lean();
-            for(let doc in documents) {
+            for (let doc in documents) {
                 doc = documents[doc];
                 console.log(doc);
                 doc["calendar"] = this.add_tz_offset_to_calendar(doc["calendar"], tz_offset);
@@ -201,7 +201,7 @@ class QariService extends UserRoleService {
                 students.push(booking.student);
             });
 
-            return {students};
+            return { students };
         } catch (err) {
             TE(err);
         }
