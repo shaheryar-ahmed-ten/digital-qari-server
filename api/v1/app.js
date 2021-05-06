@@ -4,6 +4,7 @@ const app = express.Router();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const cors = require('cors');
 
 const user_router = require("./routes/user.route");
 const admin_router = require("./routes/admin.route");
@@ -16,8 +17,10 @@ const session_router = require("./routes/session.route");
 const payment_plan_router = require("./routes/payment_plan.route");
 const referral_router = require("./routes/referral.route");
 
-const {ReE} = require("../utils/helpers");
+const { ReE } = require("../utils/helpers");
 const { HEADERS } = require('../utils/constants');
+
+app.use(cors())
 
 // Add headers
 app.use(function (req, res, next) {
@@ -30,7 +33,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(logger('dev'));
-app.use(express.json({limit: '16mb'}));
+app.use(express.json({ limit: '16mb' }));
 app.use(express.urlencoded({ limit: '16mb', extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -50,8 +53,8 @@ app.use('/sessions', session_router);
 app.use('/payment_plans', payment_plan_router);
 app.use('/referrals', referral_router);
 
-app.use(function(err, req, res, next) {
-  if(err.name === 'UnauthorizedError') {
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
     ReE(res, err);
     logger.error(err);
     return;
@@ -60,12 +63,12 @@ app.use(function(err, req, res, next) {
 });
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

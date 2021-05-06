@@ -1,5 +1,5 @@
 const { Session } = require("../../models");
-const { ERRORS, SESSION_RECORDING_STATUS, USER_ROLES, SESSION_REVIEW_TYPE, SLOT_STATUS } = require("../../utils/constants");
+const { ERRORS, SESSION_RECORDING_STATUS, USER_ROLES, SESSION_REVIEW_TYPE, SLOT_STATUS, MEETING_URL } = require("../../utils/constants");
 const axios = require("axios");
 
 const { TE } = require("../../utils/helpers");
@@ -17,35 +17,42 @@ class SessionService extends CrudService {
   async join(session_id, user_id) {
     try {
       let session = await this.find_by_id(session_id);
-      if(!session) TE(ERRORS.INVALID_SESSION);
-      if(session.qari._id != user_id && session.student._id != user_id) TE(ERRORS.NOT_ALLOWED_IN_SESSION);
+      if (!session) TE(ERRORS.INVALID_SESSION);
+      if (session.qari._id != user_id && session.student._id != user_id) TE(ERRORS.NOT_ALLOWED_IN_SESSION);
 
       else {
         let meeting = await ChimeMeetingService.create_meeting(session_id);
+        console.log(`-------------------- create meeting response `, meeting, `--------------------------`);
 
         session.meeting_id = meeting.Meeting.MeetingId;
 
         let attendee = await ChimeMeetingService.create_attendee(meeting.Meeting.MeetingId, user_id);
 
-        if(session.recording_status === SESSION_RECORDING_STATUS.RECORDING_NOT_STARTED) {
+        if (session.recording_status === SESSION_RECORDING_STATUS.RECORDING_NOT_STARTED) {
+          console.log("---------------------------------- recording start ---------------------------------------");
           let recording_bot_verification_code = Buffer.from(+new Date() + session._id).toString('base64');
-          
-          let recording_api_url = `${process.env.RECORDING_API}?recordingAction=start&meetingURL=${process.env.CLASSROOM_URL}?sessionId=${session_id}&recording_bot_verification_code=${recording_bot_verification_code}`;
-          console.log(`${process.env.CLASSROOM_URL}?sessionId=${session_id}&recording_bot_verification_code=${recording_bot_verification_code}`);
+          // let encoded_meeting_URL = encodeURIComponent(MEETING_URL.get_meeting_url(session.meeting_id))
+          let encoded_meeting_URL = `${process.env.CLASSROOM_URL}?sessionId=${session_id}`
+          console.log(`meetingURL:${process.env.CLASSROOM_URL}?sessionId=${session_id} , encoded_meeting_url:${encoded_meeting_URL}`);
+          // let recording_api_url = `${process.env.RECORDING_API}?recordingAction=start&meetingURL=${process.env.CLASSROOM_URL}?sessionId=${session_id}&recording_bot_verification_code=${recording_bot_verification_code}`;
+          let recording_api_url = `${process.env.RECORDING_API}?recordingAction=start&meetingURL=${encoded_meeting_URL}&recording_bot_verification_code=${recording_bot_verification_code}`;
+          // let recording_api_url = `https://gbm1svcip8.execute-api.us-east-2.amazonaws.com/Prod/recording?recordingAction=start&meetingURL=${encoded_meeting_URL}`
+          // console.log(`${process.env.CLASSROOM_URL}?sessionId=${session_id}&recording_bot_verification_code=${recording_bot_verification_code}`);
           let response = await axios.post(recording_api_url, null, {
             headers: {
-              'X-Amz-Date': '20210216T224257Z', 
+              'X-Amz-Date': '20210216T224257Z',
               'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210216/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=453a8391bfd7cb8069968d9538bfd921ace60a51bd62f5e2a91aec105fea1d92'
             }
           });
+          console.log("\n---------------------------------------\nresponse.data", response.data, "\n--------------------------");
           let task_id = response.data;
           task_id = `${task_id}`.split("/");
-          task_id = task_id[task_id.length-1];
-          
+          task_id = task_id[task_id.length - 1];
+
           session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STARTED;
           session.recording_task_id = task_id;
           session.recording_bot_verification_code = recording_bot_verification_code;
-          
+
         }
         await session.save();
 
@@ -63,9 +70,9 @@ class SessionService extends CrudService {
   async join_recording_bot_code(session_id, incoming_code) {
     try {
       let session = await this.find_by_id(session_id);
-      if(!session) TE(ERRORS.INVALID_SESSION);
-      if(session.recording_bot_verification_code !== incoming_code) TE(ERRORS.INVALID_BOT_VERIFICATION_CODE);
-      
+      if (!session) TE(ERRORS.INVALID_SESSION);
+      if (session.recording_bot_verification_code !== incoming_code) TE(ERRORS.INVALID_BOT_VERIFICATION_CODE);
+
       let meeting = await ChimeMeetingService.create_meeting(session_id);
       let attendee = await ChimeMeetingService.create_attendee(meeting.Meeting.MeetingId, incoming_code);
 
@@ -86,15 +93,17 @@ class SessionService extends CrudService {
       await transaction_session.startTransaction();
 
       let session = await this.find_by_id(session_id);
-      
-      if(session.recording_status !== SESSION_RECORDING_STATUS.RECORDING_STOPPED) {
+
+      if (session.recording_status !== SESSION_RECORDING_STATUS.RECORDING_STOPPED) {
         let recording_api_url = `${process.env.RECORDING_API}?recordingAction=stop&taskId=${session.recording_task_id}`;
+        // let recording_api_url = `https://gbm1svcip8.execute-api.us-east-2.amazonaws.com/Prod/recording?recordingAction=stop&taskId=arn:aws:ecs:us-east-2:341516588981:task/RecordingDemoEC2Cluster/4bca348faf8444159230c4e1217a51dc`;
         let response = await axios.post(recording_api_url, null, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210205/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=641122e8cff82fa7f3794c23da7f73ed806ab1e7048e42fdf798fc76fe9bc2c1'
           }
         });
+        console.log("leave session response.data", response.data);
         let task = response.data.task;
         let filename = task.createdAt + '.mp4';
         session.recording_status = SESSION_RECORDING_STATUS.RECORDING_STOPPED;
@@ -104,9 +113,9 @@ class SessionService extends CrudService {
       await ChimeMeetingService.end_meeting(session.meeting_id);
       session.held = true;
 
-      await QariService.assign_slot(session.qari._id, session.qari_slot.day, session.qari_slot.slot, SLOT_STATUS.AVAILABLE, {session: transaction_session});
+      await QariService.assign_slot(session.qari._id, session.qari_slot.day, session.qari_slot.slot, SLOT_STATUS.AVAILABLE, { session: transaction_session });
 
-      await session.save({session: transaction_session});
+      await session.save({ session: transaction_session });
 
       await transaction_session.commitTransaction();
 
@@ -123,31 +132,31 @@ class SessionService extends CrudService {
     let transaction_session;
     try {
       transaction_session = await this.Model.startSession();
-      
+
       transaction_session.startTransaction();
 
       let session = await this.find_by_id(session_id);
 
-      if(!session) TE(ERRORS.INVALID_SESSION);
-      
+      if (!session) TE(ERRORS.INVALID_SESSION);
+
       let user;
 
-      if(user_role === USER_ROLES.STUDENT) {
+      if (user_role === USER_ROLES.STUDENT) {
         review.review_type = SESSION_REVIEW_TYPE.STUDENT_REVIEW;
         user = await QariService.find_by_id(session.qari);
-      } else if(user_role === USER_ROLES.QARI) {
+      } else if (user_role === USER_ROLES.QARI) {
         review.review_type = SESSION_REVIEW_TYPE.QARI_REVIEW;
         user = await StudentService.find_by_id(session.student);
       }
 
       session.reviews.push(review);
 
-      await session.save({session: transaction_session});
+      await session.save({ session: transaction_session });
 
-      user.rating = ((user.num_reviews/(user.num_reviews+1)) * user.rating) + (review.peer_rating/(user.num_reviews+1));
+      user.rating = ((user.num_reviews / (user.num_reviews + 1)) * user.rating) + (review.peer_rating / (user.num_reviews + 1));
       user.num_reviews += 1;
 
-      await user.save({session: transaction_session});
+      await user.save({ session: transaction_session });
 
       await transaction_session.commitTransaction();
 
