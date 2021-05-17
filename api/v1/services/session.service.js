@@ -17,7 +17,7 @@ class SessionService extends CrudService {
   async join(session_id, user_id) {
     try {
       let session = await this.find_by_id(session_id);
-      if (!session) TE(ERRORS.INVALID_SESSION);
+      if (!session) return TE(ERRORS.INVALID_SESSION);
       if (session.qari._id != user_id && session.student._id != user_id) TE(ERRORS.NOT_ALLOWED_IN_SESSION);
 
       else {
@@ -38,7 +38,8 @@ class SessionService extends CrudService {
               'Authorization': 'AWS4-HMAC-SHA256 Credential=AKIAU7A7ZS62732L644A/20210216/us-east-2/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=453a8391bfd7cb8069968d9538bfd921ace60a51bd62f5e2a91aec105fea1d92'
             }
           });
-          console.log(`-------------------------response.data:${response.data}--------------------------------------`);
+          console.log(`-------------------------response.data:${response.data}--------------------------------------`, response.data);
+          if (response.data.failures) return TE(ERRORS.CHIME_INTERNAL_ERROR)
           let task_id = response.data;
           task_id = `${task_id}`.split("/");
           task_id = task_id[task_id.length - 1];
