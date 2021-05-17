@@ -20,13 +20,13 @@ router.get('/calendar', authenticate, async (req, res) => {
       }
 
       if (req.auth.role == USER_ROLES.INSTITUTE) {
-        let qari = await QariService.find_by_id(qari_id, 0);
+        let qari = await QariService.find_by_id(qari_id, req.query.tz_offset);
         if (!qari || qari.institute._id != req.auth.role_id) {
           TE(ERRORS.UNAUTHORIZED_USER);
         }
       }
 
-      report = await ReportService.get_qari_calendar_report(qari_id, 0);
+      report = await ReportService.get_qari_calendar_report(qari_id, req.query.tz_offset);
     } else if (institute_id) {
       if (req.auth.role != USER_ROLES.ADMIN && req.auth.role != USER_ROLES.INSTITUTE && req.auth.role_id != institute_id) {
         TE(ERRORS.UNAUTHORIZED_USER);
@@ -38,7 +38,7 @@ router.get('/calendar', authenticate, async (req, res) => {
         TE(ERRORS.UNAUTHORIZED_USER);
       }
 
-      report = await ReportService.get_full_calendar_report(0);
+      report = await ReportService.get_full_calendar_report(req.query.tz_offset);
     }
 
     ReS(res, {
