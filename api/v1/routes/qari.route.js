@@ -13,7 +13,7 @@ router.get('/all', async (req, res) => {
     if (institute) {
       filters['institute'] = convert_to_object_id(institute);
     }
-    let { documents: qaris } = await QariService.condensed_find({ ...filters }, req.query.tz_offset);
+    let { documents: qaris } = await QariService.condensed_find({ ...filters });
     ReS(res, {
       qaris
     });
@@ -59,12 +59,12 @@ router.get('/:qari_id', async (req, res) => {
 
 router.get('/:qari_id/students', authenticate, async (req, res) => {
   try {
-    let {students} = await QariService.get_students(req.params.qari_id);
+    let { students } = await QariService.get_students(req.params.qari_id);
 
     ReS(res, {
       students
     })
-  } catch(err) {
+  } catch (err) {
     ReE(res, err);
   }
 });
