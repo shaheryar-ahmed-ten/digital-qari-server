@@ -40,6 +40,7 @@ module.exports.ERRORS = {
     PAYMENT_DUE_DATE_REQUIRED: "Payment due date is required",
 
     QARI_REQUIRED: "Qari is required",
+    USER_REQUIRED: "User is required",
     QARI_SLOT_REQUIRED: "Qari slot is required",
     QARI_SLOT_DAY_REQUIRED: "Qari slot day is required",
     QARI_SLOT_NUM_REQUIRED: "Qari slot number is required",
@@ -84,7 +85,8 @@ module.exports.MODEL = {
     SESSION: "session",
     PAYMENT_PLAN: "payment_plan",
     REFERRAL: "referral",
-    PAYMENT_TRANSACTION: "payment_transaction"
+    PAYMENT_TRANSACTION: "payment_transaction",
+    NOTIFICATION_LOG: "notification_log"
 };
 
 module.exports.COLLECTION = {
@@ -98,7 +100,8 @@ module.exports.COLLECTION = {
     SESSIONS: "sessions",
     PAYMENT_PLANS: "payment_plans",
     REFERRALS: "referrals",
-    PAYMENT_TRANSACTIONS: "payment_transactions"
+    PAYMENT_TRANSACTIONS: "payment_transactions",
+    NOTIFICATION_LOGS: "notification_logs"
 };
 
 module.exports.REGEX = {
@@ -185,5 +188,12 @@ module.exports.EMAIL = {
 module.exports.SMS = {
     OTP_SMS: (otp) => {
         return `OTP: ${otp}. This is your one-time passcode for DigitalQari to verify your account.`;
+    }
+}
+
+module.exports.NOTIFICATION = {
+    SESSION_BOOKED: {
+        title: "your session has been booked",
+        body: "Session Booked"
     }
 }

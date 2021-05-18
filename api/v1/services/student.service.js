@@ -15,15 +15,15 @@ class StudentService extends UserRoleService {
     async create(obj, options) {
         try {
             obj.referral_code = OTPGenerator.generate(8, { upperCase: true, specialChars: false });
-            if(obj.reference) {
+            if (obj.reference) {
                 obj.reference = {
                     student_id: obj.reference,
                     discount: 0
                 }
-            } 
+            }
 
             return super.create(obj, options);
-        } catch(err) {
+        } catch (err) {
             TE(err);
         }
     }
@@ -34,9 +34,7 @@ class StudentService extends UserRoleService {
                 student: student_id
             });
 
-            console.log(bookings);
-
-            let {documents: payment_transactions} = await PaymentTransactionService.find({
+            let { documents: payment_transactions } = await PaymentTransactionService.find({
                 booking: bookings.map(booking => booking._id),
                 type: PAYMENT_TYPE.STUDENT_PAYMENT
             });
