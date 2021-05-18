@@ -69,7 +69,9 @@ module.exports.ERRORS = {
     NOT_ALLOWED_IN_SESSION: "You are not authorized for this session",
     INVALID_SESSION: "Either this session is expired or you are not authorized",
 
-    CHIME_INTERNAL_ERROR: "Chime internal error"
+    CHIME_INTERNAL_ERROR: "Chime internal error",
+
+    NOTIFICATION_NOT_FOUND: "Notification not found"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;

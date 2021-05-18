@@ -145,7 +145,6 @@ class BookingService extends CrudService {
       let user = await UserService.find_by_id(student_id);
       const fcm_token = user.fcm_token
       const notification = await send_notification(fcm_token, NOTIFICATION.SESSION_BOOKED.title, NOTIFICATION.SESSION_BOOKED.body)
-      console.log("notification", notification);
 
       const notification_logs = new Notification_logs({
         student: student_id,
