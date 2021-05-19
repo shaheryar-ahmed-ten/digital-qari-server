@@ -7,6 +7,7 @@ const { ReS, ReE, generate_token, send_token, authenticate, TE } = require("../.
 const { ERRORS, USER_ROLES, EMAIL } = require("../../utils/constants");
 
 const UserService = require("../services/user.service");
+const StudentService = require("../services/student.service");
 const QariService = require("../services/qari.service");
 const SESEmailSendService = require("../services/ses_email_send.service");
 
@@ -44,11 +45,26 @@ router.get('/:user_id', authenticate, async (req, res) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    let user = await UserService.create(req.body, true);
 
-    ReS(res, {
-      user
-    });
+    switch (req.body.role) {
+
+      case 'student':
+        _user = await StudentService.find({ "phone_number": { "$regex": req.body.phone_number.slice(-10), "$options": "i" } })
+        break;
+      case 'qari':
+        _user = await QariService.find({ "phone_number": { "$regex": req.body.phone_number.slice(-10), "$options": "i" } })
+        break;
+    }
+    if (!_user.documents.length) {
+
+      let user = await UserService.create(req.body, true);
+
+      ReS(res, {
+        user
+      });
+    } else {
+      ReE(res, ERRORS.PHONE_NUMBER_NOT_UNIQUE)
+    }
   } catch (err) {
     ReE(res, err);
   }
