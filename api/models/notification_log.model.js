@@ -23,7 +23,8 @@ let notification_logs_schema = new mongoose.Schema({
 });
 
 function find_handler(next) {
-    this.populate('user');
+    this.populate('qari');
+    this.populate('student');
     next();
 }
 

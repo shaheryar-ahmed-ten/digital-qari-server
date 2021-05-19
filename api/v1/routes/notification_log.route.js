@@ -8,18 +8,20 @@ const NotificationLogService = require("../services/notification_log.service");
 
 router.get('/all', authenticate, async (req, res) => {
     try {
+        let notification_logs = '';
         switch (req.auth.role) {
             case 'student':
-                await NotificationLogService.find_by_student_id(req.auth.id)
+                notification_logs = await NotificationLogService.find_by_student_id(req.auth.id)
+                break;
             case 'qari':
-                await NotificationLogService.find_by_qari_id(req.auth.id)
-
+                notification_logs = await NotificationLogService.find_by_qari_id(req.auth.id)
+                break;
         }
-        let { documents: notification_logs } = await NotificationLogService.find_by_id({ "student": req.auth.id });
         ReS(res, {
             notification_logs
         });
     } catch (err) {
+        console.log("err", err);
         ReE(res, err);
     }
 });
