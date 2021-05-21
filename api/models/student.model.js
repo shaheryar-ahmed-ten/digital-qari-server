@@ -55,6 +55,9 @@ let student_schema = new mongoose.Schema({
     num_reviews: {
         type: Number,
         default: 0
+    },
+    card_token: {
+        type: String
     }
 }, {
     timestamps: true
@@ -63,6 +66,7 @@ let student_schema = new mongoose.Schema({
 
 function find_handler(next) {
     this.populate('payment_plan');
+    this.populate('user');
     next();
 }
 

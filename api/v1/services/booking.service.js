@@ -1,5 +1,5 @@
 const { Booking } = require("../../models");
-const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK, PAYMENT_TYPE } = require("../../utils/constants");
+const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK, PAYMENT_TYPE, PAYMENT_STATUS } = require("../../utils/constants");
 const { TE } = require("../../utils/helpers");
 
 const CrudService = require("./crud.service");
@@ -66,7 +66,7 @@ class BookingService extends CrudService {
         }
       }
 
-      async function create_payment_transactions(booking_id, amounts) {
+      async function create_payment_transactions(booking_id, amounts, student) {
         try {
           
           await PaymentTransactionService.create({
@@ -78,7 +78,8 @@ class BookingService extends CrudService {
           await PaymentTransactionService.create({
             booking: booking_id,
             amount: amounts.student,
-            type: PAYMENT_TYPE.STUDENT_PAYMENT
+            type: PAYMENT_TYPE.STUDENT_PAYMENT,
+            student
           }, {session: transactionSession});
 
         } catch(err) {
@@ -87,7 +88,7 @@ class BookingService extends CrudService {
       }
 
       try {
-        let {qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset} = obj;
+        let {qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset, card_token} = obj;
 
         transactionSession = await this.Model.startSession();
 
@@ -111,7 +112,8 @@ class BookingService extends CrudService {
           qari_amount,
           student_amount,
           payment_plan,
-          payment_due_date
+          payment_due_date,
+          payment_status: PAYMENT_STATUS.PAID
         });
 
         let amounts = {};
@@ -135,9 +137,15 @@ class BookingService extends CrudService {
           };
         }
 
-        await booking.save({session: transactionSession});
+        let student = await StudentService.find_by_id(student_id);
 
-        await create_payment_transactions(booking._id, amounts);
+        student.card_token = card_token;
+
+        await student.save({session: transactionSession});
+
+        await create_payment_transactions(booking._id, amounts, student);
+
+        await booking.save({session: transactionSession});
 
         await transactionSession.commitTransaction();
         return {booking};
