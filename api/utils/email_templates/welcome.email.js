@@ -9,6 +9,7 @@ module.exports.default = function (otp) {
                 <div class="row">
                     <div class="col">
                       <p>Welcome to Digital Qari!</p>
+                      <p>Your otp is ${otp}</p>
                     </div>
                 </div>
             </div>
