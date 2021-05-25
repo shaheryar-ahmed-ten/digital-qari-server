@@ -176,7 +176,6 @@ class QariService extends UserRoleService {
             let documents = await this.Model.find(filters).select(fields).lean();
             for (let doc in documents) {
                 doc = documents[doc];
-                console.log(doc);
                 doc["calendar"] = this.add_tz_offset_to_calendar(doc["calendar"], tz_offset);
             }
             documents = documents.map(doc => {

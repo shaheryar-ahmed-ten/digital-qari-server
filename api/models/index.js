@@ -8,6 +8,7 @@ const { Session } = require("./session.model");
 const { PaymentPlan } = require("./payment_plan.model");
 const { Referral } = require("./referral.model");
 const { PaymentTransaction } = require("./payment_transaction.model");
+const { Notification_logs } = require("./notification_log.model");
 
 module.exports = {
     User,
@@ -19,5 +20,6 @@ module.exports = {
     Session,
     PaymentPlan,
     Referral,
-    PaymentTransaction
+    PaymentTransaction,
+    Notification_logs
 };
