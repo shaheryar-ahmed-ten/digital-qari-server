@@ -9,26 +9,26 @@ class CrudService {
 
     async create(obj, options) {
         try {
-          let document = new this.Model(obj);
-          await document.save(options);
-          return document;
-        } catch(err) {
-          TE(err);
+            let document = new this.Model(obj);
+            await document.save(options);
+            return document;
+        } catch (err) {
+            TE(err);
         }
     }
 
     async update(id, fields, options) {
         try {
-          let document = await this.Model.findById(id);
-          let picture = fields.picture;
-          if(picture) {
-              fields.picture = await S3FileUploadService.upload_file(`${document.user._id}-profile_picture`, picture);
-          }
-          Object.assign(document, fields);
-          await document.save(options);
-          return document;
+            let document = await this.Model.findById(id);
+            let picture = fields.picture;
+            if (picture) {
+                fields.picture = await S3FileUploadService.upload_file(`${document.user._id}-profile_picture`, picture);
+            }
+            Object.assign(document, fields);
+            await document.save(options);
+            return document;
         } catch (err) {
-          TE(err);
+            TE(err);
         }
     }
 
@@ -39,9 +39,9 @@ class CrudService {
             });
 
             return true;
-          } catch (err) {
+        } catch (err) {
             TE(err);
-          }
+        }
     }
 
     async get_all(filters = {}, limit = 10, page = 1) {
@@ -50,7 +50,7 @@ class CrudService {
             if (!page) page = 1;
             let documents = await this.Model.find(filters).skip((page - 1) * limit).limit(limit);
             let total_count = await this.Model.countDocuments(filters);
-            return {documents, total_count};
+            return { documents, total_count };
         } catch (err) {
             TE(err);
         }
@@ -68,7 +68,7 @@ class CrudService {
     async find(filters = {}) {
         try {
             let documents = await this.Model.find(filters);
-            return {documents};
+            return { documents };
         } catch (err) {
             TE(err);
         }
@@ -82,7 +82,7 @@ class CrudService {
                 delete doc["user"];
                 return doc;
             })
-            return {documents};
+            return { documents };
         } catch (err) {
             TE(err);
         }

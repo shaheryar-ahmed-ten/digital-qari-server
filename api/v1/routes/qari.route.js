@@ -59,12 +59,12 @@ router.get('/:qari_id', async (req, res) => {
 
 router.get('/:qari_id/students', authenticate, async (req, res) => {
   try {
-    let {students} = await QariService.get_students(req.params.qari_id);
+    let { students } = await QariService.get_students(req.params.qari_id);
 
     ReS(res, {
       students
     })
-  } catch(err) {
+  } catch (err) {
     ReE(res, err);
   }
 });
