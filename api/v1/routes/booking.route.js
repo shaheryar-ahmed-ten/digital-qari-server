@@ -10,7 +10,7 @@ router.post('/', authenticate, async (req, res) => {
   try {
     let obj = req.body;
     console.log("req.auth.role == USER_ROLES.STUDENT", req.auth.role == USER_ROLES.STUDENT, "req.auth.role_id != req.body.student_id", req.auth.role_id != req.body.student_id);
-    if (req.auth.role == USER_ROLES.STUDENT && req.auth.id != req.body.student_id) TE(ERRORS.UNAUTHORIZED_USER);
+    if (req.auth.role == USER_ROLES.STUDENT && req.auth.role_id != req.body.student_id) TE(ERRORS.UNAUTHORIZED_USER);
 
     if (req.auth.role == USER_ROLES.ADMIN) obj.is_admin = true;
 
