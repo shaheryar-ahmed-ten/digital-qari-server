@@ -215,6 +215,9 @@ class BookingService extends CrudService {
         await QariService.assign_slots(qari_id, slots, tz_offset, { session: transactionSession });
         await student.save({ session: transactionSession });
 
+        let start_time = new Date(date);
+        start_time.setMinutes(start_time.getMinutes()+tz_offset);
+
         let session = await SessionService.create({
           qari: qari_id,
           qari_slot: {
@@ -222,7 +225,7 @@ class BookingService extends CrudService {
             slot
           },
           student: student_id,
-          start_time: date,
+          start_time: start_time,
           free_trial: true
         }, { session: transactionSession });
 
