@@ -110,8 +110,15 @@ class QariService extends UserRoleService {
         }
     }
 
-    async assign_slot(qari_id, slot_day, slot_num, status, options) {
+    async assign_slot(qari_id, slot_day, slot_num, tz_offset, status, options) {
         try {
+            let slots = {};
+            slots[slot_day] = {};
+            slots[slot_day][slot_num] = status;
+            slots = this.add_tz_offset_to_calendar(slots, -tz_offset);
+            slot_day = Object.keys(slots)[0];
+            slot_num = ~~Object.keys(slots[slot_day])[0];
+
             let qari = await this.find_by_id(qari_id);
 
             let calendar = qari["calendar"].toJSON();

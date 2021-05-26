@@ -45,9 +45,10 @@ router.get('/:user_id', authenticate, async (req, res) => {
 
 router.post('/', async (req, res, next) => {
   try {
-
+    let _user = {
+      documents: []
+    };
     switch (req.body.role) {
-
       case 'student':
         _user = await StudentService.find({ "phone_number": { "$regex": req.body.phone_number.slice(-10), "$options": "i" } })
         break;
