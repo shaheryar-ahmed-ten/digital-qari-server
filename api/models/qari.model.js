@@ -36,6 +36,7 @@ let qari_schema = new mongoose.Schema({
     },
     gender: {
         type: String,
+        required: [true, ERRORS.GENDER_REQUIRED]
     },
     sect: {
         type: String,
