@@ -177,6 +177,12 @@ module.exports.EMAIL = {
             subject: "Digital Qari - Welcome",
             html: require("./email_templates/welcome.email").default(otp)
         }
+    },
+    CONTACT_US_EMAIL: (email, body) => {
+        return {
+            subject: `Support requested from ${email}`,
+            html: require("./email_templates/welcome.email").default(email, body)
+        }
     }
 }
 
