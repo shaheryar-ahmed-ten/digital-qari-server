@@ -89,7 +89,7 @@ class BookingService extends CrudService {
     }
 
     try {
-      let { qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset } = obj;
+      let { qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset, user_id } = obj;
 
       transactionSession = await this.Model.startSession();
 
@@ -142,10 +142,9 @@ class BookingService extends CrudService {
 
       await create_payment_transactions(booking._id, amounts);
 
-      let user = await UserService.find_by_id(student_id);
+      let user = await UserService.find_by_id(user_id);
       const fcm_token = user.fcm_token
       const notification = await send_notification(fcm_token, NOTIFICATION.SESSION_BOOKED.title, NOTIFICATION.SESSION_BOOKED.body)
-
       const notification_logs = new Notification_logs({
         student: student_id,
         qari: qari_id,
@@ -216,7 +215,7 @@ class BookingService extends CrudService {
         await student.save({ session: transactionSession });
 
         let start_time = new Date(date);
-        start_time.setMinutes(start_time.getMinutes()+tz_offset);
+        start_time.setMinutes(start_time.getMinutes() + tz_offset);
 
         let session = await SessionService.create({
           qari: qari_id,

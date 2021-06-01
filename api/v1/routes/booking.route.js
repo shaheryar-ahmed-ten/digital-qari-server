@@ -8,7 +8,7 @@ const BookingService = require("../services/booking.service");
 
 router.post('/', authenticate, async (req, res) => {
   try {
-    let obj = req.body;
+    let obj = { ...req.body, user_id: req.auth.id };
     console.log("req.auth.role == USER_ROLES.STUDENT", req.auth.role == USER_ROLES.STUDENT, "req.auth.role_id != req.body.student_id", req.auth.role_id != req.body.student_id);
     if (req.auth.role == USER_ROLES.STUDENT && req.auth.role_id != req.body.student_id) TE(ERRORS.UNAUTHORIZED_USER);
 
