@@ -53,7 +53,7 @@ app.use('/bookings', booking_router);
 app.use('/sessions', session_router);
 app.use('/payment_plans', payment_plan_router);
 app.use('/referrals', referral_router);
-app.use('/contact', contact_router);
+app.use('/contact_us', contact_router);
 
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {

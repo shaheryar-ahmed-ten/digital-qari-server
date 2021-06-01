@@ -178,10 +178,10 @@ module.exports.EMAIL = {
             html: require("./email_templates/welcome.email").default(otp)
         }
     },
-    CONTACT_US_EMAIL: (email, body) => {
+    CONTACT_US_EMAIL: (email, number, message) => {
         return {
             subject: `Support requested from ${email}`,
-            html: require("./email_templates/welcome.email").default(email, body)
+            html: require("./email_templates/contact_us.email").default(email, number, message)
         }
     }
 }

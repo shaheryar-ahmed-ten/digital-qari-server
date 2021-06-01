@@ -1,4 +1,4 @@
-module.exports.default = function (email, body) {
+module.exports.default = function (email, number, message) {
   return (
     `<html>
         <head>
@@ -8,9 +8,9 @@ module.exports.default = function (email, body) {
             <div class="container">
                 <div class="row">
                     <div class="col">
-                      <p>Support requested from ${email}</p>
+                      <p>Support requested from ${email} | ${number}</p>
                       <p>Message:</p>
-                      <p>${body}</p>
+                      <p>${message}</p>
                     </div>
                 </div>
             </div>
