@@ -15,6 +15,10 @@ let payment_transaction_schema = new mongoose.Schema({
     type: String,
     enum: [...Object.values(PAYMENT_TYPE)],
     required: [true, ERRORS.PAYMENT_TYPE_REQUIRED]
+  },
+  data: {
+    type: Object,
+    required: true
   }
 });
 

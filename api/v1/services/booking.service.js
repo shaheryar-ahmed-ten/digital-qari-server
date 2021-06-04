@@ -1,5 +1,5 @@
 const { Booking, Notification_logs } = require("../../models");
-const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK, PAYMENT_TYPE, NOTIFICATION } = require("../../utils/constants");
+const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK, PAYMENT_TYPE, PAYMENT_STATUS } = require("../../utils/constants");
 const { TE } = require("../../utils/helpers");
 
 const CrudService = require("./crud.service");
@@ -68,29 +68,72 @@ class BookingService extends CrudService {
       }
     }
 
-    async function create_payment_transactions(booking_id, amounts) {
-      try {
+    async function create_payment_transactions(booking_id, amounts, student) {
+        try {
+          
+          await PaymentTransactionService.create({
+            booking: booking_id,
+            amount: amounts.qari,
+            type: PAYMENT_TYPE.QARI_PAYMENT
+          }, {session: transactionSession});
+          
+          await PaymentTransactionService.create({
+            booking: booking_id,
+            amount: amounts.student,
+            type: PAYMENT_TYPE.STUDENT_PAYMENT,
+            student
+          }, {session: transactionSession});
 
-        await PaymentTransactionService.create({
-          booking: booking_id,
-          amount: amounts.qari,
-          type: PAYMENT_TYPE.QARI_PAYMENT
-        }, { session: transactionSession });
-
-        await PaymentTransactionService.create({
-          booking: booking_id,
-          amount: amounts.student,
-          type: PAYMENT_TYPE.STUDENT_PAYMENT
-        }, { session: transactionSession });
-
-      } catch (err) {
-        TE(err);
+        } catch(err) {
+          TE(err);
+        }
       }
-    }
 
     try {
       let { qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset, user_id } = obj;
 
+        await update_qari_slots_and_create_sessions(qari_id, student_id, qari_slots, payment_due_date, tz_offset);
+        
+        let booking = new Booking({
+          qari: qari_id,
+          student: student_id,
+          qari_amount,
+          student_amount,
+          payment_plan,
+          payment_due_date,
+          payment_status: PAYMENT_STATUS.PAID
+        });
+
+        let amounts = {};
+
+        if(is_admin) {
+          booking.student_amount = student_amount;
+          booking.qari_amount = qari_amount;
+
+          amounts = {
+            qari: qari_amount,
+            student: student_amount
+          };
+        } else {
+          let qari = await QariService.find_by_id(qari_id);
+          booking.student_amount = qari.fee;
+          booking.qari_amount = qari.fee;
+
+          amounts = {
+            qari: qari.fee,
+            student: qari.fee
+          };
+        }
+
+        let student = await StudentService.find_by_id(student_id);
+
+        student.card_token = card_token;
+
+        await student.save({session: transactionSession});
+
+        await create_payment_transactions(booking._id, amounts, student);
+
+        await booking.save({session: transactionSession});
       transactionSession = await this.Model.startSession();
 
       await transactionSession.startTransaction();
