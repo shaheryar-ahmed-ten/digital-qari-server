@@ -17,6 +17,7 @@ const session_router = require("./routes/session.route");
 const payment_plan_router = require("./routes/payment_plan.route");
 const referral_router = require("./routes/referral.route");
 const contact_router = require("./routes/contact.route");
+const notification_log_router = require("./routes/notification_log.route");
 
 const { ReE } = require("../utils/helpers");
 const { HEADERS } = require('../utils/constants');
@@ -54,6 +55,7 @@ app.use('/sessions', session_router);
 app.use('/payment_plans', payment_plan_router);
 app.use('/referrals', referral_router);
 app.use('/contact_us', contact_router);
+app.use('/notification_logs', notification_log_router);
 
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {

@@ -59,12 +59,12 @@ router.get('/:qari_id', async (req, res) => {
 
 router.get('/:qari_id/students', authenticate, async (req, res) => {
   try {
-    let {students} = await QariService.get_students(req.params.qari_id);
+    let { students } = await QariService.get_students(req.params.qari_id);
 
     ReS(res, {
       students
     })
-  } catch(err) {
+  } catch (err) {
     ReE(res, err);
   }
 });
@@ -109,7 +109,7 @@ router.post('/:qari_id/assign_slot', authenticate, async (req, res) => {
     let slot_num = req.body.slot_num;
     let status = req.body.status;
 
-    let qari = await QariService.assign_slot(req.params.qari_id, slot_day, slot_num, status);
+    let qari = await QariService.assign_slot(req.params.qari_id, slot_day, slot_num, req.query.tz_offset, status);
     ReS(res, {
       qari
     });

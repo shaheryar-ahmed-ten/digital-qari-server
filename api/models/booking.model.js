@@ -26,8 +26,8 @@ let booking_schema = new mongoose.Schema({
     required: [true, ERRORS.PAYMENT_PLAN_REQUIRED]
   },
   payment_due_date: {
-      type: Date,
-      required: [true, ERRORS.PAYMENT_DUE_DATE_REQUIRED]
+    type: Date,
+    required: [true, ERRORS.PAYMENT_DUE_DATE_REQUIRED]
   },
   payment_status: {
     type: Number,

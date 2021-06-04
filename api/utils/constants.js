@@ -15,7 +15,7 @@ module.exports.ERRORS = {
     USER_NOT_FOUND: "User not found",
     USER_ALREADY_VERIFIED: "User is already verified",
     UNAUTHORIZED_USER: "User unauthorized",
-    
+
     PASSWORDS_DONT_MATCH: "Passwords do not match",
     ACCOUNT_IS_INACTIVE: "Account is inactive",
     TOKEN_EXPIRED: "Token expired",
@@ -32,14 +32,15 @@ module.exports.ERRORS = {
     INSTITUTE_REQUIRED: "Institute is required",
     DATE_OF_BIRTH_REQUIRED: "Date of birth is required",
     GENDER_REQUIRED: "Gender is required",
-    
+
     PAYMENT_PLAN_NAME_REQUIRED: "Payment plan name is required",
     PAYMENT_PLAN_FREQUENCY_REQUIRED: "Payment plan frequency is required",
     PAYMENT_PLAN_RECURRENCE_REQUIRED: "Payment plan recurrence is required",
     PAYMENT_PLAN_REQUIRED: "Payment plan is required",
     PAYMENT_DUE_DATE_REQUIRED: "Payment due date is required",
-    
+
     QARI_REQUIRED: "Qari is required",
+    USER_REQUIRED: "User is required",
     QARI_SLOT_REQUIRED: "Qari slot is required",
     QARI_SLOT_DAY_REQUIRED: "Qari slot day is required",
     QARI_SLOT_NUM_REQUIRED: "Qari slot number is required",
@@ -63,10 +64,14 @@ module.exports.ERRORS = {
 
     FREE_TRIALS_FINISHED: "No more free trials available",
     FREE_TRIALS_DEADLINE_ENDED: "Your free trial availability deadline has ended",
-    
+
     INVALID_SLOT_STATUS: "Invalid slot status",
     NOT_ALLOWED_IN_SESSION: "You are not authorized for this session",
     INVALID_SESSION: "Either this session is expired or you are not authorized",
+
+    CHIME_INTERNAL_ERROR: "Chime internal error",
+
+    NOTIFICATION_NOT_FOUND: "Notification not found"
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;
@@ -82,7 +87,8 @@ module.exports.MODEL = {
     SESSION: "session",
     PAYMENT_PLAN: "payment_plan",
     REFERRAL: "referral",
-    PAYMENT_TRANSACTION: "payment_transaction"
+    PAYMENT_TRANSACTION: "payment_transaction",
+    NOTIFICATION_LOG: "notification_log"
 };
 
 module.exports.COLLECTION = {
@@ -96,7 +102,8 @@ module.exports.COLLECTION = {
     SESSIONS: "sessions",
     PAYMENT_PLANS: "payment_plans",
     REFERRALS: "referrals",
-    PAYMENT_TRANSACTIONS: "payment_transactions"
+    PAYMENT_TRANSACTIONS: "payment_transactions",
+    NOTIFICATION_LOGS: "notification_logs"
 };
 
 module.exports.REGEX = {
@@ -189,5 +196,12 @@ module.exports.EMAIL = {
 module.exports.SMS = {
     OTP_SMS: (otp) => {
         return `OTP: ${otp}. This is your one-time passcode for DigitalQari to verify your account.`;
+    }
+}
+
+module.exports.NOTIFICATION = {
+    SESSION_BOOKED: {
+        title: "your session has been booked",
+        body: "Session Booked"
     }
 }
