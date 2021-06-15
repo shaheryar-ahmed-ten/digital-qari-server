@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
     if (institute) {
       filters['institute'] = convert_to_object_id(institute);
     }
-    let { documents: qaris, total_count } = await QariService.get_all({ ...filters }, limit, page);
+    let { documents: qaris, total_count } = await QariService.get_all_qaris({ ...filters }, limit, page, req.query.tz_offset);
 
     ReS(res, {
       qaris,

@@ -95,6 +95,18 @@ class QariService extends UserRoleService {
         }
     }
 
+    async get_all_qaris(filters = {}, limit = 10, page = 1, tz_offset = 0) {
+        try  {
+            let { documents, total_count } = await this.get_all(filters, limit, page);
+            return { 
+                documents: documents.map(e => e.toJSON()).map(document => ({...document, calendar: this.add_tz_offset_to_calendar(document.calendar, tz_offset)})), 
+                total_count, 
+            };
+        } catch (err) {
+            TE(err);
+        }
+    }
+
     async get_all_calendars(tz_offset) {
         try {
             let documents = await this.Model.find().select("calendar").lean();
