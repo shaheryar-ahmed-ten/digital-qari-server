@@ -1,5 +1,5 @@
 const { Booking, Notification_logs } = require("../../models");
-const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK, PAYMENT_TYPE, PAYMENT_STATUS } = require("../../utils/constants");
+const { ERRORS, SLOT_STATUS, DAYS_OF_WEEK, PAYMENT_TYPE, PAYMENT_STATUS, NOTIFICATION } = require("../../utils/constants");
 const { TE } = require("../../utils/helpers");
 
 const CrudService = require("./crud.service");
@@ -90,7 +90,7 @@ class BookingService extends CrudService {
       }
 
     try {
-      let { qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset, user_id } = obj;
+      let { qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset, user_id, card_token } = obj;
 
       transactionSession = await this.Model.startSession();
 
