@@ -61,7 +61,7 @@ class UserService extends CrudService {
             let user = new User(user_obj);
 
             if (user_obj.role == USER_ROLES.STUDENT) {
-                user.otp = OTPGenerator.generate(6, { upperCase: true, specialChars: false });
+                user.otp = OTPGenerator.generate(6, { upperCase: true, specialChars: false }).toUpperCase();
 
                 await SNSSMSSendService.send_sms(user_with_role.phone_number, SMS.OTP_SMS(user.otp));
             } else {
