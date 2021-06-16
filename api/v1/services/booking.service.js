@@ -87,7 +87,17 @@ class BookingService extends CrudService {
         } catch(err) {
           TE(err);
         }
+    }
+
+    async function student_is_qari(student_id) {
+      try {
+        await QariService.find_by_id(student_id);
+        
+        return true;
+      } catch(err) {
+        return false;
       }
+    }
 
     try {
       let { qari_id, student_id, payment_plan, qari_slots, qari_amount, student_amount, is_admin, tz_offset, user_id, card_token } = obj;
@@ -95,6 +105,10 @@ class BookingService extends CrudService {
       transactionSession = await this.Model.startSession();
 
       await transactionSession.startTransaction();
+
+      if(await student_is_qari(student_id)) {
+        TE(ERRORS.QARI_CANT_BOOK_SESSION_WITH_QARI);
+      }
 
       payment_plan = await PaymentPlanService.find_by_id(payment_plan);
       if (!payment_plan) TE(ERRORS.INVALID_PAYMENT_PLAN);
@@ -150,7 +164,9 @@ class BookingService extends CrudService {
 
       let user = await UserService.find_by_id(user_id);
       const fcm_token = user.fcm_token
-      const notification = await send_notification(fcm_token, NOTIFICATION.SESSION_BOOKED.title, NOTIFICATION.SESSION_BOOKED.body)
+      
+      await send_notification(fcm_token, NOTIFICATION.SESSION_BOOKED.title, NOTIFICATION.SESSION_BOOKED.body)
+      
       const notification_logs = new Notification_logs({
         student: student_id,
         qari: qari_id,

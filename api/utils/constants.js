@@ -71,7 +71,9 @@ module.exports.ERRORS = {
 
     CHIME_INTERNAL_ERROR: "Chime internal error",
 
-    NOTIFICATION_NOT_FOUND: "Notification not found"
+    NOTIFICATION_NOT_FOUND: "Notification not found",
+
+    QARI_CANT_BOOK_SESSION_WITH_QARI: "Qari can't book a session with another qari."
 };
 
 module.exports.BCRYPT_SALT_WORK_FACTOR = 10;
@@ -201,7 +203,7 @@ module.exports.SMS = {
 
 module.exports.NOTIFICATION = {
     SESSION_BOOKED: {
-        title: "your session has been booked",
-        body: "Session Booked"
+        title: "Session Booked",
+        body: "Your Session has been booked"
     }
 }
