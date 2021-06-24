@@ -2,3 +2,6 @@
 node_modules
 digitalqariofficial.pem
 conn_ssh.sh
+
+.idea
+.vscode
