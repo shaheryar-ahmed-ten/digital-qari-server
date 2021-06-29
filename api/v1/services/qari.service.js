@@ -19,13 +19,13 @@ class QariService extends UserRoleService {
         }
     }
 
-    async update(id, fields) {
+    async update(id, fields , role  ) {
         try {
             let qari = await this.Model.findById(id);
             if (fields.recitation) {
                 fields.recitation = await S3FileUploadService.upload_file(`${qari.user._id}-recitation`, fields.recitation);
             }
-            return super.update(id, fields);
+            return super.updateQari(id, fields , role );
         } catch (err) {
             TE(err);
         }
