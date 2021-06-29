@@ -5,3 +5,7 @@ conn_ssh.sh
 
 .idea
 .vscode
+
+# skip local history of file 
+.history
+
